@@ -1,6 +1,7 @@
 package com.pacificHymalaya.MyTextGL;
 
 import android.util.FloatMath;
+import android.opengl.GLES20;
 import javax.microedition.khronos.opengles.GL10;
 
 public class SpriteBatch {
@@ -50,7 +51,9 @@ public class SpriteBatch {
    // A: textureId - the ID of the texture to use for the batch
    // R: [none]
    public void beginBatch(int textureId)  {
-      gl.glBindTexture( GL10.GL_TEXTURE_2D, textureId );  // Bind the Texture
+	  GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
+	  GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureId); //Bind the Texture
+//      gl.glBindTexture( GL10.GL_TEXTURE_2D, textureId );  // Bind the Texture
       numSprites = 0;                                 // Empty Sprite Counter
       bufferIndex = 0;                                // Reset Buffer Index (Empty)
    }

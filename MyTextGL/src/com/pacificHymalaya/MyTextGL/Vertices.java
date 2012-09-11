@@ -4,8 +4,8 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.IntBuffer;
 import java.nio.ShortBuffer;
-
 import javax.microedition.khronos.opengles.GL10;
+import android.opengl.GLES20;
 
 public class Vertices {
 
@@ -142,12 +142,13 @@ public class Vertices {
    //    numVertices - the number of vertices (indices) to draw
    // R: [none]
    public void draw(int primitiveType, int offset, int numVertices)  {
+	 //primitiveType needs to be something like GLES20.GL_TRIANGLES
       if ( indices != null )  {                       // IF Indices Exist
          indices.position( offset );                  // Set Index Buffer to Specified Offset
-         gl.glDrawElements( primitiveType, numVertices, GL10.GL_UNSIGNED_SHORT, indices );  // Draw Indexed
+         GLES20.glDrawElements(primitiveType, numVertices, GLES20.GL_UNSIGNED_SHORT, indices); // Draw Indexed
       }
       else  {                                         // ELSE No Indices Exist
-         gl.glDrawArrays( primitiveType, offset, numVertices );  // Draw Direct (Array)
+           GLES20.glDrawArrays(primitiveType, offset, numVertices); // Draw Direct (Array)
       }
    }
 
