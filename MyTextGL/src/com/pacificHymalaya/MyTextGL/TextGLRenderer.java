@@ -12,23 +12,29 @@ import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
 import android.util.Log;
 
-public class TextGLRenderer implements GLSurfaceView.Renderer  {
+public class TextGLRenderer implements GLSurfaceView.Renderer {
 
 	private static final String TAG = "MyTestRenderer";
 	private final Context mActivityContext;
-	
+	private GLText glText; // A GLText Instance
+	private int width = 100; // Updated to the Current Width + Height in
+								// onSurfaceChanged()
+	private int height = 100;
+
 	// model, view, projection matrix
 	private final float[] mMVPMatrix = new float[16];
 	private final float[] mProjMatrix = new float[16];
 	private final float[] mVMatrix = new float[16];
-	private final float[] mOrthProjMatrix = new float[16]; 
-	
+	private final float[] mOrthProjMatrix = new float[16];
+
 	@Override
 	public void onSurfaceChanged(GL10 unused, int width, int height) {
-		
+
 		// Set the OpenGL viewport to the same size as the surface.
 		GLES20.glViewport(0, 0, width, height);
-		
+		// Save width and height
+		this.width = width; // Save Current Width
+		this.height = height; // Save Current Height
 		// Create a new perspective projection matrix. The height will stay the
 		// same while the width will vary as per aspect ratio.
 		final float ratio = (float) width / height;
@@ -41,12 +47,33 @@ public class TextGLRenderer implements GLSurfaceView.Renderer  {
 		Matrix.frustumM(mProjMatrix, 0, left, right, bottom, top, near, far);
 		Matrix.orthoM(mOrthProjMatrix, 0, left, right, bottom, top, near, far);
 	}
-	
+
 	@Override
 	public void onDrawFrame(GL10 arg0) {
+		GLES20.glEnable(GLES20.GL_BLEND);
+		GLES20.glBlendFunc(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);
 
+		glText.drawTexture(width, height); // Draw the Entire Texture
+
+		// TEST: render some strings with the font
+		glText.begin(1.0f, 1.0f, 1.0f, 1.0f); // Begin Text Rendering (Set Color
+												// WHITE)
+		glText.draw("Test String :)", 0, 0); // Draw Test String
+		glText.draw("Line 1", 50, 50); // Draw Test String
+		glText.draw("Line 2", 100, 100); // Draw Test String
+		glText.end(); // End Text Rendering
+
+		glText.begin(0.5f, 0.0f, 1.0f, 1.0f); // Begin Text Rendering (Set Color
+												// BLUE)
+		glText.draw("More Lines...", 50, 150); // Draw Test String
+		glText.draw("The End.", 50, 150 + glText.getCharHeight()); // Draw Test
+																	// String
+		glText.end(); // End Text Rendering
+		// disable blend
+		GLES20.glDisable(GLES20.GL_BLEND);
 	}
-	private void setupCameraView(){
+
+	private void setupCameraView() {
 		// Position the eye in front of the origin.
 		final float eyeX = 0.0f;
 		final float eyeY = 0.0f;
@@ -72,9 +99,10 @@ public class TextGLRenderer implements GLSurfaceView.Renderer  {
 		Matrix.setLookAtM(mVMatrix, 0, eyeX, eyeY, eyeZ, lookX, lookY, lookZ,
 				upX, upY, upZ);
 	}
+
 	@Override
 	public void onSurfaceCreated(GL10 arg0, EGLConfig arg1) {
-		
+
 		// Set the background clear color to black.
 		GLES20.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
@@ -84,13 +112,19 @@ public class TextGLRenderer implements GLSurfaceView.Renderer  {
 		// Enable depth testing
 		GLES20.glEnable(GLES20.GL_DEPTH_TEST);
 
+		glText = new GLText(mActivityContext.getAssets());
+		// Load the font from file (set size + padding), creates the texture
+		// NOTE: after a successful call to this the font is ready for
+		// rendering!
+		glText.load("Roboto-Regular.ttf", 14, 2, 2); // Create Font (Height: 14
+														// Pixels / X+Y Padding
+														// 2 Pixels)
 
 	}
 
 	// constructor
 	TextGLRenderer(final Context activityContext) {
 		mActivityContext = activityContext;
-		
 
 	}
 
@@ -193,10 +227,9 @@ public class TextGLRenderer implements GLSurfaceView.Renderer  {
 		}
 		return shaderHandle;
 	}
-	
-	public static FloatBuffer getFloatBuffer(float[] data){
-		FloatBuffer buf = ByteBuffer
-				.allocateDirect(data.length * 4)
+
+	public static FloatBuffer getFloatBuffer(float[] data) {
+		FloatBuffer buf = ByteBuffer.allocateDirect(data.length * 4)
 				.order(ByteOrder.nativeOrder()).asFloatBuffer();
 		buf.put(data).position(0);
 		return buf;
