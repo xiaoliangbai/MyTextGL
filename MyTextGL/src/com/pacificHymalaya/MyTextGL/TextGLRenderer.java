@@ -26,7 +26,7 @@ public class TextGLRenderer implements GLSurfaceView.Renderer {
 	private final float[] mProjMatrix = new float[16];
 	private final float[] mVMatrix = new float[16];
 	private final float[] mOrthProjMatrix = new float[16];
-
+	
 	@Override
 	public void onSurfaceChanged(GL10 unused, int width, int height) {
 

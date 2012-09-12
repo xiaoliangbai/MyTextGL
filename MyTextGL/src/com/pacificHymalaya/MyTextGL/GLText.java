@@ -133,6 +133,8 @@ public class GLText {
 		mGLTextProgramHandle = TextGLRenderer.createAndLinkProgram(
 				vertexShader, fragmentShader, new String[] { "a_position",
 						"a_texcoord", "a_color" });
+		// Add program to OpenGL ES environment
+		GLES20.glUseProgram(mGLTextProgramHandle);
 	}
 
 	// --Load Font--//
