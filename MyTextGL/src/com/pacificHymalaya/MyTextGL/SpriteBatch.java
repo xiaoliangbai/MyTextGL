@@ -19,6 +19,8 @@ public class SpriteBatch {
    int maxSprites;                                    // Maximum Sprites Allowed in Buffer
    int numSprites;                                    // Number of Sprites Currently in Buffer
 
+   float[] colorV; // color vector, RGBA
+   
    //--Constructor--//
    // D: prepare the sprite batcher for specified maximum number of sprites
    // A: gl - the gl instance to use for rendering
@@ -50,13 +52,15 @@ public class SpriteBatch {
    //    NOTE: the overloaded (non-texture) version assumes that the texture is already bound!
    // A: textureId - the ID of the texture to use for the batch
    // R: [none]
-   public void beginBatch(int textureId)  {
+   public void beginBatch(int textureId, float[] colorV)  {
 	  GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
 	  GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureId); //Bind the Texture
 //      gl.glBindTexture( GL10.GL_TEXTURE_2D, textureId );  // Bind the Texture
       numSprites = 0;                                 // Empty Sprite Counter
       bufferIndex = 0;                                // Reset Buffer Index (Empty)
+      this.colorV = colorV;							 //point to current color vector
    }
+   
    public void beginBatch()  {
       numSprites = 0;                                 // Empty Sprite Counter
       bufferIndex = 0;                                // Reset Buffer Index (Empty)

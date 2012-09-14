@@ -71,6 +71,8 @@ public class GLText {
 	float scaleX, scaleY; // Font Scale (X,Y Axis)
 	float spaceX; // Additional (X,Y Axis) Spacing (Unscaled)
 
+	float[] mCurrentColor; //R G B A
+	
 	final String mVertexShader = "uniform mat4 u_mvpMatrix; \n"
 			+ "attribute vec4 a_position; \n" + "attribute vec2 a_texCoord; \n"
 			+ "attribute vec4 a_color; \n" + "varying vec2 v_texCoord; \n"
@@ -94,7 +96,12 @@ public class GLText {
 	public GLText(AssetManager assets) {
 		// this.gl = gl; // Save the GL10 Instance
 		this.assets = assets; // Save the Asset Manager Instance
-
+		this.mCurrentColor = new float[4];
+		this.mCurrentColor[0] = 1.0f;
+		this.mCurrentColor[1] = 1.0f;
+		this.mCurrentColor[2] = 1.0f;
+		this.mCurrentColor[3] = 1.0f;
+		
 		batch = new SpriteBatch(gl, CHAR_BATCH_SIZE); // Create Sprite Batch
 														// (with Defined Size)
 
@@ -322,9 +329,13 @@ public class GLText {
 	}
 
 	public void begin(float red, float green, float blue, float alpha) {
-		gl.glColor4f(red, green, blue, alpha); // Set Color+Alpha
-		gl.glBindTexture(GL10.GL_TEXTURE_2D, textureId); // Bind the Texture
-		batch.beginBatch(); // Begin Batch
+		mCurrentColor[0] = red;
+		mCurrentColor[1] = green;
+		mCurrentColor[2] = blue;
+		mCurrentColor[3] = alpha;
+//		gl.glColor4f(red, green, blue, alpha); // Set Color+Alpha
+//		gl.glBindTexture(GL10.GL_TEXTURE_2D, textureId); // Bind the Texture
+		batch.beginBatch( textureId, mCurrentColor); // Begin Batch
 	}
 
 	public void end() {
@@ -487,7 +498,7 @@ public class GLText {
 	// used
 	// to draw the texture to the top-left corner.
 	public void drawTexture(int width, int height) {
-		batch.beginBatch(textureId); // Begin Batch (Bind Texture)
+		batch.beginBatch(textureId, mCurrentColor); // Begin Batch (Bind Texture)
 		batch.drawSprite(textureSize / 2, height - (textureSize / 2),
 				textureSize, textureSize, textureRgn); // Draw
 		batch.endBatch(); // End Batch
