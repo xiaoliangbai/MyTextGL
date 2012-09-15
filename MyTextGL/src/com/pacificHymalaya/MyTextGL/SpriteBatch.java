@@ -12,7 +12,7 @@ public class SpriteBatch {
    final static int INDICES_PER_SPRITE = 6;           // Indices Per Sprite
 
    //--Members--//
-   GL10 gl;                                           // GL Instance
+//   GL10 gl;                                           // GL Instance
    Vertices vertices;                                 // Vertices Instance Used for Rendering
    float[] vertexBuffer;                              // Vertex Buffer
    int bufferIndex;                                   // Vertex Buffer Start Index
@@ -20,15 +20,16 @@ public class SpriteBatch {
    int numSprites;                                    // Number of Sprites Currently in Buffer
 
    float[] colorV; // color vector, RGBA
+   int mVertexProgramHandle; //program handler
    
    //--Constructor--//
    // D: prepare the sprite batcher for specified maximum number of sprites
    // A: gl - the gl instance to use for rendering
    //    maxSprites - the maximum allowed sprites per batch
-   public SpriteBatch(GL10 gl, int maxSprites)  {
-      this.gl = gl;                                   // Save GL Instance
+   public SpriteBatch( int maxSprites, int programHandle)  {
+//      this.gl = gl;                                   // Save GL Instance
       this.vertexBuffer = new float[maxSprites * VERTICES_PER_SPRITE * VERTEX_SIZE];  // Create Vertex Buffer
-      this.vertices = new Vertices( gl, maxSprites * VERTICES_PER_SPRITE, maxSprites * INDICES_PER_SPRITE, true, true, false );  // Create Rendering Vertices
+      this.vertices = new Vertices( programHandle, maxSprites * VERTICES_PER_SPRITE, maxSprites * INDICES_PER_SPRITE, true, true, false );  // Create Rendering Vertices
       this.bufferIndex = 0;                           // Reset Buffer Index
       this.maxSprites = maxSprites;                   // Save Maximum Sprites
       this.numSprites = 0;                            // Clear Sprite Counter
@@ -51,6 +52,7 @@ public class SpriteBatch {
    // D: signal the start of a batch. set the texture and clear buffer
    //    NOTE: the overloaded (non-texture) version assumes that the texture is already bound!
    // A: textureId - the ID of the texture to use for the batch
+   // A: colorV - the color vector, R,B,G,A
    // R: [none]
    public void beginBatch(int textureId, float[] colorV)  {
 	  GLES20.glActiveTexture(GLES20.GL_TEXTURE0);

@@ -17,10 +17,11 @@ public class Vertices {
    final static int NORMAL_CNT = 3;                   // Number of Components in Vertex Normal
 
    final static int INDEX_SIZE = Short.SIZE / 8;      // Index Byte Size (Short.SIZE = bits)
+ 
 
    //--Members--//
    // NOTE: all members are constant, and initialized in constructor!
-   final GL10 gl;                                     // GL Instance
+//   final GL10 gl;                                     // GL Instance
    final boolean hasColor;                            // Use Color in Vertices
    final boolean hasTexCoords;                        // Use Texture Coords in Vertices
    final boolean hasNormals;                          // Use Normals in Vertices
@@ -33,6 +34,14 @@ public class Vertices {
    public int numIndices;                             // Number of Indices in Buffer
    final int[] tmpBuffer;                             // Temp Buffer for Vertex Conversion
 
+   final int mProgramHandle; 	// Handle to program
+   
+   private int mvpMatrixHandle;
+   private int vertexPositionHandle;
+   private int vertexColorHandle;
+   private int textureCoordHandle;
+   private int textureUniformHandle;
+   
    //--Constructor--//
    // D: create the vertices/indices as specified (for 2d/3d)
    // A: gl - the gl instance to use
@@ -43,11 +52,12 @@ public class Vertices {
    //    hasNormals - use normals in vertices
    //    use3D - (false, default) use 2d positions (ie. x/y only)
    //            (true) use 3d positions (ie. x/y/z)
-   public Vertices(GL10 gl, int maxVertices, int maxIndices, boolean hasColor, boolean hasTexCoords, boolean hasNormals)  {
-      this( gl, maxVertices, maxIndices, hasColor, hasTexCoords, hasNormals, false );  // Call Overloaded Constructor
+   public Vertices( int programHandle, int maxVertices, int maxIndices, boolean hasColor, boolean hasTexCoords, boolean hasNormals)  {
+      this( programHandle, maxVertices, maxIndices, hasColor, hasTexCoords, hasNormals, false );  // Call Overloaded Constructor
    }
-   public Vertices(GL10 gl, int maxVertices, int maxIndices, boolean hasColor, boolean hasTexCoords, boolean hasNormals, boolean use3D)  {
-      this.gl = gl;                                   // Save GL Instance
+   public Vertices( int programHandle, int maxVertices, int maxIndices, boolean hasColor, boolean hasTexCoords, boolean hasNormals, boolean use3D)  {
+//      this.gl = gl;                                   // Save GL Instance
+	   this.mProgramHandle = programHandle;
       this.hasColor = hasColor;                       // Save Color Flag
       this.hasTexCoords = hasTexCoords;               // Save Texture Coords Flag
       this.hasNormals = hasNormals;                   // Save Normals Flag
@@ -111,6 +121,16 @@ public class Vertices {
    // A: [none]
    // R: [none]
    public void bind()  {
+	   mvpMatrixHandle = GLES20.glGetUniformLocation(mProgramHandle,
+				"u_mvpMatrix");
+	   vertexPositionHandle =  GLES20.glGetAttribLocation(mProgramHandle,
+				"a_Position");
+	   vertexColorHandle =  GLES20.glGetAttribLocation(mProgramHandle,
+				"a_Color");   
+	   textureCoordHandle =  GLES20.glGetAttribLocation(mProgramHandle,
+				"a_texCoord");   
+	   textureUniformHandle = GLES20.glGetUniformLocation(mProgramHandle, "s_Texture");
+	   
       gl.glEnableClientState( GL10.GL_VERTEX_ARRAY ); // Enable Position in Vertices
       vertices.position( 0 );                         // Set Vertex Buffer to Position
       gl.glVertexPointer( positionCnt, GL10.GL_FLOAT, vertexSize, vertices );  // Set Vertex Pointer

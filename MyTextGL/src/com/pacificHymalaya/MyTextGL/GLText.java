@@ -45,7 +45,7 @@ public class GLText {
 													// Render Per Batch
 
 	// --Members--//
-	GL10 gl; // GL10 Instance
+//	GL10 gl; // GL10 Instance
 	AssetManager assets; // Asset Manager
 	SpriteBatch batch; // Batch Renderer
 
@@ -102,8 +102,7 @@ public class GLText {
 		this.mCurrentColor[2] = 1.0f;
 		this.mCurrentColor[3] = 1.0f;
 		
-		batch = new SpriteBatch(gl, CHAR_BATCH_SIZE); // Create Sprite Batch
-														// (with Defined Size)
+
 
 		charWidths = new float[CHAR_CNT]; // Create the Array of Character
 											// Widths
@@ -140,6 +139,8 @@ public class GLText {
 		mGLTextProgramHandle = TextGLRenderer.createAndLinkProgram(
 				vertexShader, fragmentShader, new String[] { "a_position",
 						"a_texcoord", "a_color" });
+		batch = new SpriteBatch(CHAR_BATCH_SIZE, mGLTextProgramHandle); // Create Sprite Batch
+		// (with Defined Size)
 		// Add program to OpenGL ES environment
 		GLES20.glUseProgram(mGLTextProgramHandle);
 	}
@@ -340,7 +341,11 @@ public class GLText {
 
 	public void end() {
 		batch.endBatch(); // End Batch
-		gl.glColor4f(1.0f, 1.0f, 1.0f, 1.0f); // Restore Default Color/Alpha
+		mCurrentColor[0] = 1.0f;
+		mCurrentColor[1] = 1.0f;
+		mCurrentColor[2] = 1.0f;
+		mCurrentColor[3] = 1.0f;
+		//gl.glColor4f(1.0f, 1.0f, 1.0f, 1.0f); // Restore Default Color/Alpha
 	}
 
 	// --Draw Text--//
