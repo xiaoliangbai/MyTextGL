@@ -41,8 +41,15 @@ public class Vertices {
    private int vertexColorHandle;
    private int textureCoordHandle;
    private int textureUniformHandle;
+   private int textureId;
    
-   //--Constructor--//
+   public int getTextureId() {
+	return textureId;
+}
+public void setTextureId(int textureId) {
+	this.textureId = textureId;
+}
+//--Constructor--//
    // D: create the vertices/indices as specified (for 2d/3d)
    // A: gl - the gl instance to use
    //    maxVertices - maximum vertices allowed in buffer
@@ -129,29 +136,34 @@ public class Vertices {
 				"a_Color");   
 	   textureCoordHandle =  GLES20.glGetAttribLocation(mProgramHandle,
 				"a_texCoord");   
-	   textureUniformHandle = GLES20.glGetUniformLocation(mProgramHandle, "s_Texture");
+	   textureUniformHandle = GLES20.glGetUniformLocation(mProgramHandle, "s_texture");
 	   
-      gl.glEnableClientState( GL10.GL_VERTEX_ARRAY ); // Enable Position in Vertices
       vertices.position( 0 );                         // Set Vertex Buffer to Position
-      gl.glVertexPointer( positionCnt, GL10.GL_FLOAT, vertexSize, vertices );  // Set Vertex Pointer
+      GLES20.glVertexAttribPointer(vertexPositionHandle, numVertices,
+				GLES20.GL_INT, false, vertexStride, vertices); // Set Vertex Pointer
+      GLES20.glEnableVertexAttribArray(vertexPositionHandle); // // Enable Position in Vertices
 
       if ( hasColor )  {                              // IF Vertices Have Color
-         gl.glEnableClientState( GL10.GL_COLOR_ARRAY );  // Enable Color in Vertices
          vertices.position( positionCnt );            // Set Vertex Buffer to Color
-         gl.glColorPointer( COLOR_CNT, GL10.GL_FLOAT, vertexSize, vertices );  // Set Color Pointer
+         GLES20.glVertexAttribPointer(vertexColorHandle, numVertices,
+ 				GLES20.GL_INT, false, vertexStride, vertices); // Set Color Pointer
+         GLES20.glEnableVertexAttribArray(vertexColorHandle); // // Enable Color in Vertices
       }
 
       if ( hasTexCoords )  {                          // IF Vertices Have Texture Coords
-         gl.glEnableClientState( GL10.GL_TEXTURE_COORD_ARRAY );  // Enable Texture Coords in Vertices
          vertices.position( positionCnt + ( hasColor ? COLOR_CNT : 0 ) );  // Set Vertex Buffer to Texture Coords (NOTE: position based on whether color is also specified)
-         gl.glTexCoordPointer( TEXCOORD_CNT, GL10.GL_FLOAT, vertexSize, vertices );  // Set Texture Coords Pointer
+         GLES20.glVertexAttribPointer(textureCoordHandle, numVertices,
+ 				GLES20.GL_INT, false, vertexStride, vertices); // Set Color Pointer
+         GLES20.glEnableVertexAttribArray(textureCoordHandle); // Enable Texture Coords Pointer
+         
+		 GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
+		 GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureId);
+		 GLES20.glUniform1i(textureUniformHandle, GLES20.GL_TEXTURE0);
       }
-
       if ( hasNormals )  {
-         gl.glEnableClientState( GL10.GL_NORMAL_ARRAY );  // Enable Normals in Vertices
-         vertices.position( positionCnt + ( hasColor ? COLOR_CNT : 0 ) + ( hasTexCoords ? TEXCOORD_CNT : 0 ) );  // Set Vertex Buffer to Normals (NOTE: position based on whether color/texcoords is also specified)
-         gl.glNormalPointer( GL10.GL_FLOAT, vertexSize, vertices );  // Set Normals Pointer
+       //ToDo -- Add processing for Normal
       }
+      
    }
 
    //--Draw--//
@@ -178,14 +190,12 @@ public class Vertices {
    // A: [none]
    // R: [none]
    public void unbind()  {
+	      GLES20.glDisableVertexAttribArray(vertexPositionHandle); // // Position in Vertices
       if ( hasColor )                                 // IF Vertices Have Color
-         gl.glDisableClientState( GL10.GL_COLOR_ARRAY );  // Clear Color State
+    	  GLES20.glDisableVertexAttribArray(vertexColorHandle);
+      if ( hasTexCoords )   
+    	  GLES20.glDisableVertexAttribArray(textureCoordHandle);// IF Vertices Have Texture Coords
 
-      if ( hasTexCoords )                             // IF Vertices Have Texture Coords
-         gl.glDisableClientState( GL10.GL_TEXTURE_COORD_ARRAY );  // Clear Texture Coords State
-
-      if ( hasNormals )                               // IF Vertices Have Normals
-         gl.glDisableClientState( GL10.GL_NORMAL_ARRAY );  // Clear Normals State
    }
 
    //--Draw Full--//
@@ -196,35 +206,9 @@ public class Vertices {
    //    numVertices - the number of vertices (indices) to draw
    // R: [none]
    public void drawFull(int primitiveType, int offset, int numVertices)  {
-      gl.glEnableClientState( GL10.GL_VERTEX_ARRAY ); // Enable Position in Vertices
-      vertices.position( 0 );                         // Set Vertex Buffer to Position
-      gl.glVertexPointer( positionCnt, GL10.GL_FLOAT, vertexSize, vertices );  // Set Vertex Pointer
-
-      if ( hasColor )  {                              // IF Vertices Have Color
-         gl.glEnableClientState( GL10.GL_COLOR_ARRAY );  // Enable Color in Vertices
-         vertices.position( positionCnt );            // Set Vertex Buffer to Color
-         gl.glColorPointer( COLOR_CNT, GL10.GL_FLOAT, vertexSize, vertices );  // Set Color Pointer
-      }
-
-      if ( hasTexCoords )  {                          // IF Vertices Have Texture Coords
-         gl.glEnableClientState( GL10.GL_TEXTURE_COORD_ARRAY );  // Enable Texture Coords in Vertices
-         vertices.position( positionCnt + ( hasColor ? COLOR_CNT : 0 ) );  // Set Vertex Buffer to Texture Coords (NOTE: position based on whether color is also specified)
-         gl.glTexCoordPointer( TEXCOORD_CNT, GL10.GL_FLOAT, vertexSize, vertices );  // Set Texture Coords Pointer
-      }
-
-      if ( indices != null )  {                       // IF Indices Exist
-         indices.position( offset );                  // Set Index Buffer to Specified Offset
-         gl.glDrawElements( primitiveType, numVertices, GL10.GL_UNSIGNED_SHORT, indices );  // Draw Indexed
-      }
-      else  {                                         // ELSE No Indices Exist
-         gl.glDrawArrays( primitiveType, offset, numVertices );  // Draw Direct (Array)
-      }
-
-      if ( hasTexCoords )                             // IF Vertices Have Texture Coords
-         gl.glDisableClientState( GL10.GL_TEXTURE_COORD_ARRAY );  // Clear Texture Coords State
-
-      if ( hasColor )                                 // IF Vertices Have Color
-         gl.glDisableClientState( GL10.GL_COLOR_ARRAY );  // Clear Color State
+      bind();
+      draw(primitiveType, offset, numVertices);
+      unbind();
    }
 
    //--Set Vertex Elements--//

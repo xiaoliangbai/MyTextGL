@@ -61,6 +61,7 @@ public class SpriteBatch {
       numSprites = 0;                                 // Empty Sprite Counter
       bufferIndex = 0;                                // Reset Buffer Index (Empty)
       this.colorV = colorV;							 //point to current color vector
+      this.vertices.setTextureId(textureId);
    }
    
    public void beginBatch()  {
