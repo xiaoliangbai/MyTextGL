@@ -139,20 +139,20 @@ public void setTextureId(int textureId) {
 	   textureUniformHandle = GLES20.glGetUniformLocation(mProgramHandle, "s_texture");
 	   
       vertices.position( 0 );                         // Set Vertex Buffer to Position
-      GLES20.glVertexAttribPointer(vertexPositionHandle, numVertices,
+      GLES20.glVertexAttribPointer(vertexPositionHandle, positionCnt,
 				GLES20.GL_INT, false, vertexStride, vertices); // Set Vertex Pointer
       GLES20.glEnableVertexAttribArray(vertexPositionHandle); // // Enable Position in Vertices
 
       if ( hasColor )  {                              // IF Vertices Have Color
          vertices.position( positionCnt );            // Set Vertex Buffer to Color
-         GLES20.glVertexAttribPointer(vertexColorHandle, numVertices,
+         GLES20.glVertexAttribPointer(vertexColorHandle, COLOR_CNT,
  				GLES20.GL_INT, false, vertexStride, vertices); // Set Color Pointer
          GLES20.glEnableVertexAttribArray(vertexColorHandle); // // Enable Color in Vertices
       }
 
       if ( hasTexCoords )  {                          // IF Vertices Have Texture Coords
          vertices.position( positionCnt + ( hasColor ? COLOR_CNT : 0 ) );  // Set Vertex Buffer to Texture Coords (NOTE: position based on whether color is also specified)
-         GLES20.glVertexAttribPointer(textureCoordHandle, numVertices,
+         GLES20.glVertexAttribPointer(textureCoordHandle, TEXCOORD_CNT,
  				GLES20.GL_INT, false, vertexStride, vertices); // Set Color Pointer
          GLES20.glEnableVertexAttribArray(textureCoordHandle); // Enable Texture Coords Pointer
          
