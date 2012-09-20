@@ -49,14 +49,19 @@ public class TextGLRenderer implements GLSurfaceView.Renderer {
 
 	@Override
 	public void onDrawFrame(GL10 arg0) {
+        // Set the viewport
+        GLES20.glViewport(0, 0, width, height);
+
+        // Clear the color buffer
+        GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
+        
 		GLES20.glEnable(GLES20.GL_BLEND);
 		GLES20.glBlendFunc(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);
 
 		glText.drawTexture(width, height); // Draw the Entire Texture
 
 		// TEST: render some strings with the font
-		glText.begin(1.0f, 1.0f, 1.0f, 1.0f); // Begin Text Rendering (Set Color
-												// WHITE)
+		glText.begin(1.0f, 1.0f, 1.0f, 1.0f); // Begin Text Rendering (Set Color WHITE)
 		glText.draw("Test String :)", 0, 0); // Draw Test String
 		glText.draw("Line 1", 50, 50); // Draw Test String
 		glText.draw("Line 2", 100, 100); // Draw Test String
