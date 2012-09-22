@@ -11,7 +11,6 @@ package com.pacificHymalaya.MyTextGL;
 
 import javax.microedition.khronos.opengles.GL10;
 import android.opengl.GLES20;
-
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -73,6 +72,7 @@ public class GLText {
 
 	float[] mCurrentColor; //R G B A
 	
+	
 	final String mVertexShader = "uniform mat4 u_mvpMatrix; \n"
 			+ "attribute vec4 a_position; \n" + "attribute vec2 a_texCoord; \n"
 			+ "attribute vec4 a_color; \n" + "varying vec2 v_texCoord; \n"
@@ -88,6 +88,8 @@ public class GLText {
 			+ "  gl_FragColor = texture2D(s_texture, v_texCoord); \n" 
 			+ " }\n";
 
+	private float[] mMVPMatrix;
+
 	/** This is a handle to our per-vertex cube shading program. */
 	private int mGLTextProgramHandle;
 
@@ -95,16 +97,15 @@ public class GLText {
 	// D: save GL instance + asset manager, create arrays, and initialize the
 	// members
 	// A: gl - OpenGL ES 10 Instance
-	public GLText(AssetManager assets) {
+	public GLText(AssetManager assets, float [] mvpMatrix) {
 		// this.gl = gl; // Save the GL10 Instance
+		this.mMVPMatrix = mvpMatrix;
 		this.assets = assets; // Save the Asset Manager Instance
 		this.mCurrentColor = new float[4];
 		this.mCurrentColor[0] = 1.0f;
 		this.mCurrentColor[1] = 1.0f;
 		this.mCurrentColor[2] = 1.0f;
 		this.mCurrentColor[3] = 1.0f;
-		
-
 
 		charWidths = new float[CHAR_CNT]; // Create the Array of Character
 											// Widths
@@ -141,7 +142,7 @@ public class GLText {
 		mGLTextProgramHandle = TextGLRenderer.createAndLinkProgram(
 				vertexShader, fragmentShader, new String[] { "a_position",
 						"a_texcoord", "a_color" });
-		batch = new SpriteBatch(CHAR_BATCH_SIZE, mGLTextProgramHandle); // Create Sprite Batch
+		batch = new SpriteBatch(CHAR_BATCH_SIZE, mGLTextProgramHandle, mMVPMatrix); // Create Sprite Batch
 		// (with Defined Size)
 		// Add program to OpenGL ES environment
 		GLES20.glUseProgram(mGLTextProgramHandle);

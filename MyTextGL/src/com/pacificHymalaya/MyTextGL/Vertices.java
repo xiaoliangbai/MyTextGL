@@ -42,6 +42,7 @@ public class Vertices {
    private int textureCoordHandle;
    private int textureUniformHandle;
    private int textureId;
+   float [] mvpMatrix;
    
    public int getTextureId() {
 	return textureId;
@@ -59,11 +60,12 @@ public void setTextureId(int textureId) {
    //    hasNormals - use normals in vertices
    //    use3D - (false, default) use 2d positions (ie. x/y only)
    //            (true) use 3d positions (ie. x/y/z)
-   public Vertices( int programHandle, int maxVertices, int maxIndices, boolean hasColor, boolean hasTexCoords, boolean hasNormals)  {
-      this( programHandle, maxVertices, maxIndices, hasColor, hasTexCoords, hasNormals, false );  // Call Overloaded Constructor
+   public Vertices( int programHandle, float [] mvpMatrix, int maxVertices, int maxIndices, boolean hasColor, boolean hasTexCoords, boolean hasNormals)  {
+      this( programHandle, mvpMatrix, maxVertices, maxIndices, hasColor, hasTexCoords, hasNormals, false );  // Call Overloaded Constructor
    }
-   public Vertices( int programHandle, int maxVertices, int maxIndices, boolean hasColor, boolean hasTexCoords, boolean hasNormals, boolean use3D)  {
+   public Vertices( int programHandle, float [] mvpMatrix, int maxVertices, int maxIndices, boolean hasColor, boolean hasTexCoords, boolean hasNormals, boolean use3D)  {
 //      this.gl = gl;                                   // Save GL Instance
+	   this.mvpMatrix = mvpMatrix;
 	   this.mProgramHandle = programHandle;
       this.hasColor = hasColor;                       // Save Color Flag
       this.hasTexCoords = hasTexCoords;               // Save Texture Coords Flag
@@ -137,6 +139,8 @@ public void setTextureId(int textureId) {
 	   textureCoordHandle =  GLES20.glGetAttribLocation(mProgramHandle,
 				"a_texCoord");   
 	   textureUniformHandle = GLES20.glGetUniformLocation(mProgramHandle, "s_texture");
+	   
+	   GLES20.glUniformMatrix4fv(mvpMatrixHandle, 1, false, mvpMatrix, 0);
 	   
       vertices.position( 0 );                         // Set Vertex Buffer to Position
       GLES20.glVertexAttribPointer(vertexPositionHandle, positionCnt,

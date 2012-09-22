@@ -49,6 +49,9 @@ public class TextGLRenderer implements GLSurfaceView.Renderer {
 
 	@Override
 	public void onDrawFrame(GL10 arg0) {
+		//setup camera view
+		setupCameraView();
+		
         // Set the viewport
         GLES20.glViewport(0, 0, width, height);
 
@@ -58,19 +61,23 @@ public class TextGLRenderer implements GLSurfaceView.Renderer {
 		GLES20.glEnable(GLES20.GL_BLEND);
 		GLES20.glBlendFunc(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);
 
-		glText.drawTexture(width, height); // Draw the Entire Texture
+		Matrix.setIdentityM(mMVPMatrix, 0);
+		Matrix.multiplyMM(mMVPMatrix, 0, mOrthProjMatrix, 0, mVMatrix, 0);
 
+		glText.drawTexture(width, height); // Draw the Entire Texture
+//		glText.drawTexture(1, height/width); // Draw the Entire Texture
+		Log.d(TAG, "height = " + height + ", width = " + width);
 		// TEST: render some strings with the font
-		glText.begin(1.0f, 1.0f, 1.0f, 1.0f); // Begin Text Rendering (Set Color WHITE)
+		glText.begin(1.0f, 1.0f, 1.0f, 0.5f); // Begin Text Rendering (Set Color WHITE)
 		glText.draw("Test String :)", 0, 0); // Draw Test String
-		glText.draw("Line 1", 50, 50); // Draw Test String
-		glText.draw("Line 2", 100, 100); // Draw Test String
+		glText.draw("Line 1", 2, 2); // Draw Test String
+		glText.draw("Line 2", 3, 3); // Draw Test String
 		glText.end(); // End Text Rendering
 
 		glText.begin(0.5f, 0.0f, 1.0f, 1.0f); // Begin Text Rendering (Set Color
 												// BLUE)
-		glText.draw("More Lines...", 50, 150); // Draw Test String
-		glText.draw("The End.", 50, 150 + glText.getCharHeight()); // Draw Test
+		glText.draw("More Lines...", 5, 5); // Draw Test String
+		glText.draw("The End.", 5, 5 + glText.getCharHeight()); // Draw Test
 																	// String
 		glText.end(); // End Text Rendering
 		// disable blend
@@ -86,7 +93,7 @@ public class TextGLRenderer implements GLSurfaceView.Renderer {
 		// We are looking toward the distance
 		final float lookX = 0.0f;
 		final float lookY = 0.0f;
-		final float lookZ = -5.0f;
+		final float lookZ = -20.0f;
 
 		// Set our up vector. This is where our head would be pointing were we
 		// holding the camera.
@@ -108,15 +115,15 @@ public class TextGLRenderer implements GLSurfaceView.Renderer {
 	public void onSurfaceCreated(GL10 arg0, EGLConfig arg1) {
 
 		// Set the background clear color to black.
-		GLES20.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+		GLES20.glClearColor(0.3f, 0.3f, 0.3f, 1.0f);
 
 		// Use culling to remove back faces.
-		GLES20.glEnable(GLES20.GL_CULL_FACE);
+		//GLES20.glEnable(GLES20.GL_CULL_FACE);
 
 		// Enable depth testing
-		GLES20.glEnable(GLES20.GL_DEPTH_TEST);
+		//GLES20.glEnable(GLES20.GL_DEPTH_TEST);
 
-		glText = new GLText(mActivityContext.getAssets());
+		glText = new GLText(mActivityContext.getAssets(), mMVPMatrix);
 		// Load the font from file (set size + padding), creates the texture
 		// NOTE: after a successful call to this the font is ready for
 		// rendering!

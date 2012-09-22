@@ -3,9 +3,11 @@ package com.pacificHymalaya.MyTextGL;
 import android.util.FloatMath;
 import android.opengl.GLES20;
 import javax.microedition.khronos.opengles.GL10;
+import android.util.Log;
 
 public class SpriteBatch {
 
+	final private static String TAG ="SpriteBatch";  
    //--Constants--//
    final static int VERTEX_SIZE = 8;                  // Vertex Size (in Components) ie. (X,Y,U,V,R,B,G,A)
    final static int VERTICES_PER_SPRITE = 4;          // Vertices Per Sprite
@@ -26,10 +28,10 @@ public class SpriteBatch {
    // D: prepare the sprite batcher for specified maximum number of sprites
    // A: gl - the gl instance to use for rendering
    //    maxSprites - the maximum allowed sprites per batch
-   public SpriteBatch( int maxSprites, int programHandle)  {
+   public SpriteBatch( int maxSprites, int programHandle, float [] mvpMatrix)  {
 //      this.gl = gl;                                   // Save GL Instance
       this.vertexBuffer = new float[maxSprites * VERTICES_PER_SPRITE * VERTEX_SIZE];  // Create Vertex Buffer
-      this.vertices = new Vertices( programHandle, maxSprites * VERTICES_PER_SPRITE, maxSprites * INDICES_PER_SPRITE, true, true, false );  // Create Rendering Vertices
+      this.vertices = new Vertices( programHandle, mvpMatrix, maxSprites * VERTICES_PER_SPRITE, maxSprites * INDICES_PER_SPRITE, true, true, true );  // Create Rendering Vertices
       this.bufferIndex = 0;                           // Reset Buffer Index
       this.maxSprites = maxSprites;                   // Save Maximum Sprites
       this.numSprites = 0;                            // Clear Sprite Counter
@@ -98,7 +100,7 @@ public class SpriteBatch {
          numSprites = 0;                              // Empty Sprite Counter
          bufferIndex = 0;                             // Reset Buffer Index (Empty)
       }
-
+      Log.d(TAG, "drawSprite x,y,z = " + x + ", " + y);
       float halfWidth = width / 2.0f;                 // Calculate Half Width
       float halfHeight = height / 2.0f;               // Calculate Half Height
       float x1 = x - halfWidth;                       // Calculate Left X
@@ -106,8 +108,10 @@ public class SpriteBatch {
       float x2 = x + halfWidth;                       // Calculate Right X
       float y2 = y + halfHeight;                      // Calculate Top Y
 
+      float z = -5.0f;
       vertexBuffer[bufferIndex++] = x1;               // Add X for Vertex 0
       vertexBuffer[bufferIndex++] = y1;               // Add Y for Vertex 0
+      vertexBuffer[bufferIndex++] = z;               // Add Z for Vertex 0
       vertexBuffer[bufferIndex++] = region.u1;        // Add U for Vertex 0
       vertexBuffer[bufferIndex++] = region.v2;        // Add V for Vertex 0
       vertexBuffer[bufferIndex++] = colorV[0];        // Add R for Vertex 0
@@ -117,6 +121,7 @@ public class SpriteBatch {
       
       vertexBuffer[bufferIndex++] = x2;               // Add X for Vertex 1
       vertexBuffer[bufferIndex++] = y1;               // Add Y for Vertex 1
+      vertexBuffer[bufferIndex++] = z;               // Add Z for Vertex 1
       vertexBuffer[bufferIndex++] = region.u2;        // Add U for Vertex 1
       vertexBuffer[bufferIndex++] = region.v2;        // Add V for Vertex 1
       vertexBuffer[bufferIndex++] = colorV[0];        // Add R for Vertex 1
@@ -126,6 +131,7 @@ public class SpriteBatch {
 
       vertexBuffer[bufferIndex++] = x2;               // Add X for Vertex 2
       vertexBuffer[bufferIndex++] = y2;               // Add Y for Vertex 2
+      vertexBuffer[bufferIndex++] = z;               // Add Z for Vertex 2
       vertexBuffer[bufferIndex++] = region.u2;        // Add U for Vertex 2
       vertexBuffer[bufferIndex++] = region.v1;        // Add V for Vertex 2
       vertexBuffer[bufferIndex++] = colorV[0];        // Add R for Vertex 2
@@ -135,6 +141,7 @@ public class SpriteBatch {
 
       vertexBuffer[bufferIndex++] = x1;               // Add X for Vertex 3
       vertexBuffer[bufferIndex++] = y2;               // Add Y for Vertex 3
+      vertexBuffer[bufferIndex++] = z;               // Add Z for Vertex 3
       vertexBuffer[bufferIndex++] = region.u1;        // Add U for Vertex 3
       vertexBuffer[bufferIndex++] = region.v1;        // Add V for Vertex 3
       vertexBuffer[bufferIndex++] = colorV[0];        // Add R for Vertex 3
