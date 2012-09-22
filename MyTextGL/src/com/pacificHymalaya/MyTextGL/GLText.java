@@ -23,14 +23,8 @@ public class GLText {
 	// --Constants--//
 	public final static int CHAR_START = 32; // First Character (ASCII Code)
 	public final static int CHAR_END = 126; // Last Character (ASCII Code)
-	public final static int CHAR_CNT = (((CHAR_END - CHAR_START) + 1) + 1); // Character
-																			// Count
-																			// (Including
-																			// Character
-																			// to
-																			// use
-																			// for
-																			// Unknown)
+	public final static int CHAR_CNT = (((CHAR_END - CHAR_START) + 1) + 1); 
+	// Character Count (Including Character to use for Unknown)
 
 	public final static int CHAR_NONE = 32; // Character to Use for Unknown
 											// (ASCII Code)
@@ -71,7 +65,7 @@ public class GLText {
 	float spaceX; // Additional (X,Y Axis) Spacing (Unscaled)
 
 	float[] mCurrentColor; //R G B A
-	
+	private ControlButton cb; //control button
 	
 	final String mVertexShader = "uniform mat4 u_mvpMatrix; \n"
 			+ "attribute vec4 a_position; \n" + "attribute vec2 a_texCoord; \n"
@@ -93,6 +87,10 @@ public class GLText {
 	/** This is a handle to our per-vertex cube shading program. */
 	private int mGLTextProgramHandle;
 
+	void drawCB(){
+		
+		cb.draw(mMVPMatrix, 0.15f);
+	}
 	// --Constructor--//
 	// D: save GL instance + asset manager, create arrays, and initialize the
 	// members
@@ -146,6 +144,7 @@ public class GLText {
 		// (with Defined Size)
 		// Add program to OpenGL ES environment
 		GLES20.glUseProgram(mGLTextProgramHandle);
+		cb = new ControlButton();
 	}
 
 	// --Load Font--//

@@ -133,9 +133,9 @@ public void setTextureId(int textureId) {
 	   mvpMatrixHandle = GLES20.glGetUniformLocation(mProgramHandle,
 				"u_mvpMatrix");
 	   vertexPositionHandle =  GLES20.glGetAttribLocation(mProgramHandle,
-				"a_Position");
+				"a_position");
 	   vertexColorHandle =  GLES20.glGetAttribLocation(mProgramHandle,
-				"a_Color");   
+				"a_color");   
 	   textureCoordHandle =  GLES20.glGetAttribLocation(mProgramHandle,
 				"a_texCoord");   
 	   textureUniformHandle = GLES20.glGetUniformLocation(mProgramHandle, "s_texture");

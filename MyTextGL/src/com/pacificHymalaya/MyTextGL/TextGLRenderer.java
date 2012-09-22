@@ -16,12 +16,14 @@ public class TextGLRenderer implements GLSurfaceView.Renderer {
 	private static final String TAG = "MyTestRenderer";
 	private final Context mActivityContext;
 	private GLText glText; // A GLText Instance
+
 	private int width = 100; // Updated to the Current Width + Height in
 								// onSurfaceChanged()
 	private int height = 100;
 
 	// model, view, projection matrix
 	private final float[] mMVPMatrix = new float[16];
+	private final float[] mModelMatrix = new float[16];
 	private final float[] mProjMatrix = new float[16];
 	private final float[] mVMatrix = new float[16];
 	private final float[] mOrthProjMatrix = new float[16];
@@ -52,19 +54,19 @@ public class TextGLRenderer implements GLSurfaceView.Renderer {
 		//setup camera view
 		setupCameraView();
 		
-        // Set the viewport
-        GLES20.glViewport(0, 0, width, height);
-
         // Clear the color buffer
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
         
 		GLES20.glEnable(GLES20.GL_BLEND);
 		GLES20.glBlendFunc(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);
 
-		Matrix.setIdentityM(mMVPMatrix, 0);
-		Matrix.multiplyMM(mMVPMatrix, 0, mOrthProjMatrix, 0, mVMatrix, 0);
-
+		Matrix.setIdentityM(mModelMatrix, 0);
+		Matrix.translateM(mModelMatrix, 0, 0.7f*width/height, -0.8f, -2.0f);
+		Matrix.multiplyMM(mMVPMatrix, 0, mOrthProjMatrix, 0, mModelMatrix, 0);
+		glText.drawCB();
+		
 		glText.drawTexture(width, height); // Draw the Entire Texture
+		glText.drawCB();
 //		glText.drawTexture(1, height/width); // Draw the Entire Texture
 		Log.d(TAG, "height = " + height + ", width = " + width);
 		// TEST: render some strings with the font
@@ -124,6 +126,7 @@ public class TextGLRenderer implements GLSurfaceView.Renderer {
 		//GLES20.glEnable(GLES20.GL_DEPTH_TEST);
 
 		glText = new GLText(mActivityContext.getAssets(), mMVPMatrix);
+
 		// Load the font from file (set size + padding), creates the texture
 		// NOTE: after a successful call to this the font is ready for
 		// rendering!
