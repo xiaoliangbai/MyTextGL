@@ -108,7 +108,7 @@ public class SpriteBatch {
       float x2 = x + halfWidth;                       // Calculate Right X
       float y2 = y + halfHeight;                      // Calculate Top Y
 
-      float z = -5.0f;
+      float z = -8.0f;
       vertexBuffer[bufferIndex++] = x1;               // Add X for Vertex 0
       vertexBuffer[bufferIndex++] = y1;               // Add Y for Vertex 0
       vertexBuffer[bufferIndex++] = z;               // Add Z for Vertex 0

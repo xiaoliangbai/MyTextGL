@@ -89,7 +89,7 @@ public class GLText {
 
 	void drawCB(){
 		
-		cb.draw(mMVPMatrix, 0.15f);
+		cb.draw(mMVPMatrix, 15.0f);
 	}
 	// --Constructor--//
 	// D: save GL instance + asset manager, create arrays, and initialize the

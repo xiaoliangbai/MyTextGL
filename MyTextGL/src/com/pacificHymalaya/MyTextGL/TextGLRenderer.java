@@ -46,7 +46,8 @@ public class TextGLRenderer implements GLSurfaceView.Renderer {
 		final float near = 2.0f;
 		final float far = 10.0f;
 		Matrix.frustumM(mProjMatrix, 0, left, right, bottom, top, near, far);
-		Matrix.orthoM(mOrthProjMatrix, 0, left, right, bottom, top, near, far);
+//		Matrix.orthoM(mOrthProjMatrix, 0, left, right, bottom, top, near, far);
+		Matrix.orthoM(mOrthProjMatrix, 0, 0, width, 0, height, near, far);
 	}
 
 	@Override
@@ -61,7 +62,8 @@ public class TextGLRenderer implements GLSurfaceView.Renderer {
 		GLES20.glBlendFunc(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);
 
 		Matrix.setIdentityM(mModelMatrix, 0);
-		Matrix.translateM(mModelMatrix, 0, 0.7f*width/height, -0.8f, -2.0f);
+		Matrix.translateM(mModelMatrix, 0, 0.7f*width, 0.2f*height, -2.0f);
+		Matrix.multiplyMM(mModelMatrix, 0, mVMatrix, 0, mModelMatrix, 0);
 		Matrix.multiplyMM(mMVPMatrix, 0, mOrthProjMatrix, 0, mModelMatrix, 0);
 		glText.drawCB();
 		
@@ -120,17 +122,17 @@ public class TextGLRenderer implements GLSurfaceView.Renderer {
 		GLES20.glClearColor(0.3f, 0.3f, 0.3f, 1.0f);
 
 		// Use culling to remove back faces.
-		//GLES20.glEnable(GLES20.GL_CULL_FACE);
+		GLES20.glEnable(GLES20.GL_CULL_FACE);
 
 		// Enable depth testing
-		//GLES20.glEnable(GLES20.GL_DEPTH_TEST);
+//		GLES20.glEnable(GLES20.GL_DEPTH_TEST);
 
 		glText = new GLText(mActivityContext.getAssets(), mMVPMatrix);
 
 		// Load the font from file (set size + padding), creates the texture
 		// NOTE: after a successful call to this the font is ready for
 		// rendering!
-		glText.load("Roboto-Regular.ttf", 14, 2, 2); // Create Font (Height: 14
+		glText.load("Roboto-Regular.ttf", 6, 1, 1); // Create Font (Height: 14
 														// Pixels / X+Y Padding
 														// 2 Pixels)
 
