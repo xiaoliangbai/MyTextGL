@@ -94,21 +94,23 @@ public class SpriteBatch {
    //    region - the texture region to use for sprite
    // R: [none]
    public void drawSprite(float x, float y, float width, float height, TextureRegion region)  {
-      if ( numSprites == maxSprites )  {              // IF Sprite Buffer is Full
+      if ( numSprites == maxSprites )  {    // IF Sprite Buffer is Full
          endBatch();                                  // End Batch
          // NOTE: leave current texture bound!!
-         numSprites = 0;                              // Empty Sprite Counter
-         bufferIndex = 0;                             // Reset Buffer Index (Empty)
+         numSprites = 0;                           // Empty Sprite Counter
+         bufferIndex = 0;                           // Reset Buffer Index (Empty)
       }
-      Log.d(TAG, "drawSprite x,y,z = " + x + ", " + y);
+      
+      float factor = 1.0f;
       float halfWidth = width / 2.0f;                 // Calculate Half Width
       float halfHeight = height / 2.0f;               // Calculate Half Height
-      float x1 = x - halfWidth;                       // Calculate Left X
-      float y1 = y - halfHeight;                      // Calculate Bottom Y
-      float x2 = x + halfWidth;                       // Calculate Right X
-      float y2 = y + halfHeight;                      // Calculate Top Y
-
-      float z = -8.0f;
+      float x1 = (x - halfWidth)*factor;                       // Calculate Left X
+      float y1 = (y - halfHeight)*factor;                      // Calculate Bottom Y
+      float x2 = (x + halfWidth)*factor;                       // Calculate Right X
+      float y2 = (y + halfHeight)*factor;                      // Calculate Top Y
+      float z = 0.0f;
+      Log.d(TAG, "drawSprite x,y,z = " + x1 + ", " + y1 + ", " + z);
+      
       vertexBuffer[bufferIndex++] = x1;               // Add X for Vertex 0
       vertexBuffer[bufferIndex++] = y1;               // Add Y for Vertex 0
       vertexBuffer[bufferIndex++] = z;               // Add Z for Vertex 0

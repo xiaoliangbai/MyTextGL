@@ -67,8 +67,12 @@ public class TextGLRenderer implements GLSurfaceView.Renderer {
 		Matrix.multiplyMM(mMVPMatrix, 0, mOrthProjMatrix, 0, mModelMatrix, 0);
 		glText.drawCB();
 		
+		Matrix.setIdentityM(mModelMatrix, 0);
+		Matrix.multiplyMM(mModelMatrix, 0, mVMatrix, 0, mModelMatrix, 0);
+		Matrix.multiplyMM(mMVPMatrix, 0, mOrthProjMatrix, 0, mModelMatrix, 0);
 		glText.drawTexture(width, height); // Draw the Entire Texture
 		glText.drawCB();
+		
 //		glText.drawTexture(1, height/width); // Draw the Entire Texture
 		Log.d(TAG, "height = " + height + ", width = " + width);
 		// TEST: render some strings with the font
@@ -122,7 +126,7 @@ public class TextGLRenderer implements GLSurfaceView.Renderer {
 		GLES20.glClearColor(0.3f, 0.3f, 0.3f, 1.0f);
 
 		// Use culling to remove back faces.
-		GLES20.glEnable(GLES20.GL_CULL_FACE);
+//		GLES20.glEnable(GLES20.GL_CULL_FACE);
 
 		// Enable depth testing
 //		GLES20.glEnable(GLES20.GL_DEPTH_TEST);
@@ -132,7 +136,7 @@ public class TextGLRenderer implements GLSurfaceView.Renderer {
 		// Load the font from file (set size + padding), creates the texture
 		// NOTE: after a successful call to this the font is ready for
 		// rendering!
-		glText.load("Roboto-Regular.ttf", 6, 1, 1); // Create Font (Height: 14
+		glText.load("Roboto-Regular.ttf", 6, 0, 0); // Create Font (Height: 14
 														// Pixels / X+Y Padding
 														// 2 Pixels)
 

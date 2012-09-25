@@ -23,7 +23,7 @@ public class GLText {
 	// --Constants--//
 	public final static int CHAR_START = 32; // First Character (ASCII Code)
 	public final static int CHAR_END = 126; // Last Character (ASCII Code)
-	public final static int CHAR_CNT = (((CHAR_END - CHAR_START) + 1) + 1); 
+	public final static int CHAR_CNT = (((CHAR_END - CHAR_START) + 1) + 1);
 	// Character Count (Including Character to use for Unknown)
 
 	public final static int CHAR_NONE = 32; // Character to Use for Unknown
@@ -38,7 +38,7 @@ public class GLText {
 													// Render Per Batch
 
 	// --Members--//
-//	GL10 gl; // GL10 Instance
+	// GL10 gl; // GL10 Instance
 	AssetManager assets; // Asset Manager
 	SpriteBatch batch; // Batch Renderer
 
@@ -64,9 +64,9 @@ public class GLText {
 	float scaleX, scaleY; // Font Scale (X,Y Axis)
 	float spaceX; // Additional (X,Y Axis) Spacing (Unscaled)
 
-	float[] mCurrentColor; //R G B A
-	private ControlButton cb; //control button
-	
+	float[] mCurrentColor; // R G B A
+	private ControlButton cb; // control button
+
 	final String mVertexShader = "uniform mat4 u_mvpMatrix; \n"
 			+ "attribute vec4 a_position; \n" + "attribute vec2 a_texCoord; \n"
 			+ "attribute vec4 a_color; \n" + "varying vec2 v_texCoord; \n"
@@ -74,28 +74,26 @@ public class GLText {
 			+ "  v_texCoord = a_texCoord; \n" + "  v_color = a_color; \n"
 			+ "  gl_Position = u_mvpMatrix * a_position; }\n";
 
-	final String mFragmentShader = "precision mediump float; \n" 
-			+ "uniform sampler2D s_texture; \n"
-			+ "varying vec4 v_color;\n"
-			+ "varying vec2 v_texCoord; \n"
-			+ "void main() { \n"
-			+ "  gl_FragColor = texture2D(s_texture, v_texCoord); \n" 
-			+ " }\n";
+	final String mFragmentShader = "precision mediump float; \n"
+			+ "uniform sampler2D s_texture; \n" + "varying vec4 v_color;\n"
+			+ "varying vec2 v_texCoord; \n" + "void main() { \n"
+			+ "  gl_FragColor = texture2D(s_texture, v_texCoord); \n" + " }\n";
 
 	private float[] mMVPMatrix;
 
 	/** This is a handle to our per-vertex cube shading program. */
 	private int mGLTextProgramHandle;
 
-	void drawCB(){
-		
+	void drawCB() {
+
 		cb.draw(mMVPMatrix, 15.0f);
 	}
+
 	// --Constructor--//
 	// D: save GL instance + asset manager, create arrays, and initialize the
 	// members
 	// A: gl - OpenGL ES 10 Instance
-	public GLText(AssetManager assets, float [] mvpMatrix) {
+	public GLText(AssetManager assets, float[] mvpMatrix) {
 		// this.gl = gl; // Save the GL10 Instance
 		this.mMVPMatrix = mvpMatrix;
 		this.assets = assets; // Save the Asset Manager Instance
@@ -140,7 +138,8 @@ public class GLText {
 		mGLTextProgramHandle = TextGLRenderer.createAndLinkProgram(
 				vertexShader, fragmentShader, new String[] { "a_position",
 						"a_texcoord", "a_color" });
-		batch = new SpriteBatch(CHAR_BATCH_SIZE, mGLTextProgramHandle, mMVPMatrix); // Create Sprite Batch
+		batch = new SpriteBatch(CHAR_BATCH_SIZE, mGLTextProgramHandle,
+				mMVPMatrix); // Create Sprite Batch
 		// (with Defined Size)
 		// Add program to OpenGL ES environment
 		GLES20.glUseProgram(mGLTextProgramHandle);
@@ -172,14 +171,14 @@ public class GLText {
 		paint.setColor(0xffffffff); // Set ARGB (White, Opaque)
 		paint.setTypeface(tf); // Set Typeface
 
-		// get font metrics
-		Paint.FontMetrics fm = paint.getFontMetrics(); // Get Font Metrics
-		fontHeight = (float) Math.ceil(Math.abs(fm.bottom) + Math.abs(fm.top)); // Calculate
-																				// Font
-																				// Height
-		fontAscent = (float) Math.ceil(Math.abs(fm.ascent)); // Save Font Ascent
-		fontDescent = (float) Math.ceil(Math.abs(fm.descent)); // Save Font
-																// Descent
+		// Get Font Metrics
+		Paint.FontMetrics fm = paint.getFontMetrics();
+		// Calculate Font Height
+		fontHeight = (float) Math.ceil(Math.abs(fm.bottom) + Math.abs(fm.top));
+		// Save Font Ascent
+		fontAscent = (float) Math.ceil(Math.abs(fm.ascent));
+		// Save Font Descent
+		fontDescent = (float) Math.ceil(Math.abs(fm.descent));
 
 		// determine the width of each character (including unknown character)
 		// also determine the maximum character width
@@ -209,13 +208,10 @@ public class GLText {
 		// find the maximum size, validate, and setup cell sizes
 		cellWidth = (int) charWidthMax + (2 * fontPadX); // Set Cell Width
 		cellHeight = (int) charHeight + (2 * fontPadY); // Set Cell Height
-		int maxSize = cellWidth > cellHeight ? cellWidth : cellHeight; // Save
-																		// Max
-																		// Size
-																		// (Width/Height)
-		if (maxSize < FONT_SIZE_MIN || maxSize > FONT_SIZE_MAX) // IF Maximum
-																// Size Outside
-																// Valid Bounds
+		// Save Max Size (Width/Height)
+		int maxSize = cellWidth > cellHeight ? cellWidth : cellHeight;
+		// IF Maximum Size Outside Valid Bounds
+		if (maxSize < FONT_SIZE_MIN || maxSize > FONT_SIZE_MAX)
 			return false; // Return Error
 
 		// set texture size based on max font size (width or height)
@@ -242,10 +238,8 @@ public class GLText {
 		// calculate rows/columns
 		// NOTE: while not required for anything, these may be useful to have :)
 		colCnt = textureSize / cellWidth; // Calculate Number of Columns
-		rowCnt = (int) Math.ceil((float) CHAR_CNT / (float) colCnt); // Calculate
-																		// Number
-																		// of
-																		// Rows
+		// Calculate Number of Rows
+		rowCnt = (int) Math.ceil((float) CHAR_CNT / (float) colCnt);
 
 		// render each of the characters to the canvas (ie. build the font map)
 		float x = fontPadX; // Set Start Position (X)
@@ -255,8 +249,8 @@ public class GLText {
 			s[0] = c; // Set Character to Draw
 			canvas.drawText(s, 0, 1, x, y, paint); // Draw Character
 			x += cellWidth; // Move to Next Character
-			if ((x + cellWidth - fontPadX) > textureSize) { // IF End of Line
-															// Reached
+			// IF End of Line Reached
+			if ((x + cellWidth - fontPadX) > textureSize) {
 				x = fontPadX; // Set X for New Row
 				y += cellHeight; // Move Down a Row
 			}
@@ -272,9 +266,9 @@ public class GLText {
 		// setup filters for texture
 		GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureId); // Bind Texture
 		GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D,
-				GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_NEAREST); // Set
-																	// Minification
-																	// Filter
+		// Set Minification Filter
+				GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_NEAREST);
+
 		GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D,
 				GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_NEAREST); // Set
 																	// Magnification
@@ -293,13 +287,17 @@ public class GLText {
 		// release the bitmap
 		bitmap.recycle(); // Release the Bitmap
 
+		if (textureId == 0) {
+			throw new RuntimeException("Error loading texture.");
+		}
+
 		// setup the array of character texture regions
 		x = 0; // Initialize X
 		y = 0; // Initialize Y
 		for (int c = 0; c < CHAR_CNT; c++) { // FOR Each Character (On Texture)
+			 // Create Region for Character
 			charRgn[c] = new TextureRegion(textureSize, textureSize, x, y,
-					cellWidth - 1, cellHeight - 1); // Create Region for
-													// Character
+					cellWidth - 1, cellHeight - 1);
 			x += cellWidth; // Move to Next Char (Cell)
 			if (x + cellWidth > textureSize) {
 				x = 0; // Reset X Position to Start
@@ -336,9 +334,9 @@ public class GLText {
 		mCurrentColor[1] = green;
 		mCurrentColor[2] = blue;
 		mCurrentColor[3] = alpha;
-//		gl.glColor4f(red, green, blue, alpha); // Set Color+Alpha
-//		gl.glBindTexture(GL10.GL_TEXTURE_2D, textureId); // Bind the Texture
-		batch.beginBatch( textureId, mCurrentColor); // Begin Batch
+		// gl.glColor4f(red, green, blue, alpha); // Set Color+Alpha
+		// gl.glBindTexture(GL10.GL_TEXTURE_2D, textureId); // Bind the Texture
+		batch.beginBatch(textureId, mCurrentColor); // Begin Batch
 	}
 
 	public void end() {
@@ -347,7 +345,7 @@ public class GLText {
 		mCurrentColor[1] = 1.0f;
 		mCurrentColor[2] = 1.0f;
 		mCurrentColor[3] = 1.0f;
-		//gl.glColor4f(1.0f, 1.0f, 1.0f, 1.0f); // Restore Default Color/Alpha
+		// gl.glColor4f(1.0f, 1.0f, 1.0f, 1.0f); // Restore Default Color/Alpha
 	}
 
 	// --Draw Text--//
@@ -505,7 +503,8 @@ public class GLText {
 	// used
 	// to draw the texture to the top-left corner.
 	public void drawTexture(int width, int height) {
-		batch.beginBatch(textureId, mCurrentColor); // Begin Batch (Bind Texture)
+		batch.beginBatch(textureId, mCurrentColor); // Begin Batch (Bind
+													// Texture)
 		batch.drawSprite(textureSize / 2, height - (textureSize / 2),
 				textureSize, textureSize, textureRgn); // Draw
 		batch.endBatch(); // End Batch
