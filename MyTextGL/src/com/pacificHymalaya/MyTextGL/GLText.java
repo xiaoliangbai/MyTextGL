@@ -98,9 +98,9 @@ public class GLText {
 		this.mMVPMatrix = mvpMatrix;
 		this.assets = assets; // Save the Asset Manager Instance
 		this.mCurrentColor = new float[4];
-		this.mCurrentColor[0] = 1.0f;
-		this.mCurrentColor[1] = 1.0f;
-		this.mCurrentColor[2] = 1.0f;
+		this.mCurrentColor[0] = 0.5f;
+		this.mCurrentColor[1] = 0.6f;
+		this.mCurrentColor[2] = 0.7f;
 		this.mCurrentColor[3] = 1.0f;
 
 		charWidths = new float[CHAR_CNT]; // Create the Array of Character
@@ -190,8 +190,8 @@ public class GLText {
 			s[0] = c; // Set Character
 			paint.getTextWidths(s, 0, 1, w); // Get Character Bounds
 			charWidths[cnt] = w[0]; // Get Width
-			if (charWidths[cnt] > charWidthMax) // IF Width Larger Than Max
-												// Width
+			// IF Width Larger Than Max Width
+			if (charWidths[cnt] > charWidthMax) 
 				charWidthMax = charWidths[cnt]; // Save New Max Width
 			cnt++; // Advance Array Counter
 		}
@@ -265,25 +265,20 @@ public class GLText {
 
 		// setup filters for texture
 		GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureId); // Bind Texture
-		GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D,
 		// Set Minification Filter
-				GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_NEAREST);
-
 		GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D,
-				GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_NEAREST); // Set
-																	// Magnification
-																	// Filter
+				GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_NEAREST);
+		// Set Magnification Filter
+		GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D,
+				GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_NEAREST);
+		// Set U Wrapping
 		GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_S,
-				GLES20.GL_CLAMP_TO_EDGE); // Set U Wrapping
+				GLES20.GL_CLAMP_TO_EDGE);
+		// Set V Wrapping
 		GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_T,
-				GLES20.GL_CLAMP_TO_EDGE); // Set V Wrapping
-
+				GLES20.GL_CLAMP_TO_EDGE); 
 		// load the generated bitmap onto the texture
-		GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, bitmap, 0); // Load Bitmap
-																// to Texture
-		// Do we need to unbind texture in opengl es 2.0?
-		// gl.glBindTexture( GL10.GL_TEXTURE_2D, 0 ); // Unbind Texture
-
+		GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, bitmap, 0);
 		// release the bitmap
 		bitmap.recycle(); // Release the Bitmap
 

@@ -13,18 +13,17 @@ import android.util.Log;
 
 public class TextGLRenderer implements GLSurfaceView.Renderer {
 
-	private static final String TAG = "MyTestRenderer";
+	private static final String TAG = "TextGLRenderer";
 	private final Context mActivityContext;
 	private GLText glText; // A GLText Instance
-
-	private int width = 100; // Updated to the Current Width + Height in
-								// onSurfaceChanged()
+	//Updated to the Current Width + Height in onSurfaceChanged()
+	private int width = 100; 
 	private int height = 100;
 
 	// model, view, projection matrix
 	private final float[] mMVPMatrix = new float[16];
 	private final float[] mModelMatrix = new float[16];
-	private final float[] mProjMatrix = new float[16];
+//	private final float[] mProjMatrix = new float[16];
 	private final float[] mVMatrix = new float[16];
 	private final float[] mOrthProjMatrix = new float[16];
 	
@@ -45,7 +44,7 @@ public class TextGLRenderer implements GLSurfaceView.Renderer {
 		final float top = 1.0f;
 		final float near = 2.0f;
 		final float far = 10.0f;
-		Matrix.frustumM(mProjMatrix, 0, left, right, bottom, top, near, far);
+//		Matrix.frustumM(mProjMatrix, 0, left, right, bottom, top, near, far);
 //		Matrix.orthoM(mOrthProjMatrix, 0, left, right, bottom, top, near, far);
 		Matrix.orthoM(mOrthProjMatrix, 0, 0, width, 0, height, near, far);
 	}
@@ -62,32 +61,32 @@ public class TextGLRenderer implements GLSurfaceView.Renderer {
 		GLES20.glBlendFunc(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);
 
 		Matrix.setIdentityM(mModelMatrix, 0);
-		Matrix.translateM(mModelMatrix, 0, 0.7f*width, 0.2f*height, -2.0f);
+		Matrix.translateM(mModelMatrix, 0, 0.7f*width, 0.2f*height, -1.0f);
 		Matrix.multiplyMM(mModelMatrix, 0, mVMatrix, 0, mModelMatrix, 0);
 		Matrix.multiplyMM(mMVPMatrix, 0, mOrthProjMatrix, 0, mModelMatrix, 0);
 		glText.drawCB();
 		
 		Matrix.setIdentityM(mModelMatrix, 0);
+		Matrix.translateM(mModelMatrix, 0, 0.5f*width, 0.5f*height, -1.0f);
 		Matrix.multiplyMM(mModelMatrix, 0, mVMatrix, 0, mModelMatrix, 0);
 		Matrix.multiplyMM(mMVPMatrix, 0, mOrthProjMatrix, 0, mModelMatrix, 0);
-		glText.drawTexture(width, height); // Draw the Entire Texture
 		glText.drawCB();
+		glText.drawTexture(width, height); // Draw the Entire Texture
 		
-//		glText.drawTexture(1, height/width); // Draw the Entire Texture
-		Log.d(TAG, "height = " + height + ", width = " + width);
-		// TEST: render some strings with the font
-		glText.begin(1.0f, 1.0f, 1.0f, 0.5f); // Begin Text Rendering (Set Color WHITE)
-		glText.draw("Test String :)", 0, 0); // Draw Test String
-		glText.draw("Line 1", 2, 2); // Draw Test String
-		glText.draw("Line 2", 3, 3); // Draw Test String
-		glText.end(); // End Text Rendering
-
-		glText.begin(0.5f, 0.0f, 1.0f, 1.0f); // Begin Text Rendering (Set Color
-												// BLUE)
-		glText.draw("More Lines...", 5, 5); // Draw Test String
-		glText.draw("The End.", 5, 5 + glText.getCharHeight()); // Draw Test
-																	// String
-		glText.end(); // End Text Rendering
+//		Log.d(TAG, "height = " + height + ", width = " + width);
+//		// TEST: render some strings with the font
+//		glText.begin(1.0f, 1.0f, 1.0f, 0.5f); // Begin Text Rendering (Set Color WHITE)
+//		glText.draw("Test String :)", 0, 0); // Draw Test String
+//		glText.draw("Line 1", 2, 2); // Draw Test String
+//		glText.draw("Line 2", 3, 3); // Draw Test String
+//		glText.end(); // End Text Rendering
+//
+//		glText.begin(0.5f, 0.0f, 1.0f, 1.0f); // Begin Text Rendering (Set Color
+//												// BLUE)
+//		glText.draw("More Lines...", 5, 5); // Draw Test String
+//		glText.draw("The End.", 5, 5 + glText.getCharHeight()); // Draw Test
+//																	// String
+//		glText.end(); // End Text Rendering
 		// disable blend
 		GLES20.glDisable(GLES20.GL_BLEND);
 	}
@@ -123,7 +122,7 @@ public class TextGLRenderer implements GLSurfaceView.Renderer {
 	public void onSurfaceCreated(GL10 arg0, EGLConfig arg1) {
 
 		// Set the background clear color to black.
-		GLES20.glClearColor(0.3f, 0.3f, 0.3f, 1.0f);
+		GLES20.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
 		// Use culling to remove back faces.
 //		GLES20.glEnable(GLES20.GL_CULL_FACE);
@@ -136,9 +135,8 @@ public class TextGLRenderer implements GLSurfaceView.Renderer {
 		// Load the font from file (set size + padding), creates the texture
 		// NOTE: after a successful call to this the font is ready for
 		// rendering!
-		glText.load("Roboto-Regular.ttf", 6, 0, 0); // Create Font (Height: 14
-														// Pixels / X+Y Padding
-														// 2 Pixels)
+		// Create Font (Height: 14 Pixels; X+Y Padding 2 Pixels)
+		glText.load("Roboto-Regular.ttf", 14, 2, 2); 
 
 	}
 

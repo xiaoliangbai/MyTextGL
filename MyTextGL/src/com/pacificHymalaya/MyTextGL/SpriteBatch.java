@@ -93,7 +93,8 @@ public class SpriteBatch {
    //    width, height - the width and height of the sprite
    //    region - the texture region to use for sprite
    // R: [none]
-   public void drawSprite(float x, float y, float width, float height, TextureRegion region)  {
+   public void drawSprite(float x, float y, float width, float height, 
+		   TextureRegion region)  {
       if ( numSprites == maxSprites )  {    // IF Sprite Buffer is Full
          endBatch();                                  // End Batch
          // NOTE: leave current texture bound!!
@@ -108,7 +109,7 @@ public class SpriteBatch {
       float y1 = (y - halfHeight)*factor;                      // Calculate Bottom Y
       float x2 = (x + halfWidth)*factor;                       // Calculate Right X
       float y2 = (y + halfHeight)*factor;                      // Calculate Top Y
-      float z = 0.0f;
+      float z = -2.0f;
       Log.d(TAG, "drawSprite x,y,z = " + x1 + ", " + y1 + ", " + z);
       
       vertexBuffer[bufferIndex++] = x1;               // Add X for Vertex 0

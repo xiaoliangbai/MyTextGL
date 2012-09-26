@@ -173,7 +173,8 @@ public void setTextureId(int textureId) {
       }
 
       if ( hasTexCoords )  {                          // IF Vertices Have Texture Coords
-         vertices.position( positionCnt + ( hasColor ? COLOR_CNT : 0 ) );  // Set Vertex Buffer to Texture Coords (NOTE: position based on whether color is also specified)
+    	// Set Vertex Buffer to Texture Coords (NOTE: position based on whether color is also specified)
+         vertices.position( positionCnt + ( hasColor ? COLOR_CNT : 0 ) );  
          GLES20.glVertexAttribPointer(textureCoordHandle, TEXCOORD_CNT,
  				GLES20.GL_FLOAT, false, vertexStride, vertices); // Set Color Pointer
          GLES20.glEnableVertexAttribArray(textureCoordHandle); // Enable Texture Coords Pointer
