@@ -73,7 +73,7 @@ public class TextGLRenderer implements GLSurfaceView.Renderer {
 		glText.drawCB();
 		//glText.setScale(0.1f);
 		glText.drawTexture(width, height); // Draw the Entire Texture
-		
+		glText.draw("Test String :)", 0.5f*width, 0.5f*height); // Draw Test String
 //		Log.d(TAG, "height = " + height + ", width = " + width);
 //		// TEST: render some strings with the font
 //		glText.begin(1.0f, 1.0f, 1.0f, 0.5f); // Begin Text Rendering (Set Color WHITE)

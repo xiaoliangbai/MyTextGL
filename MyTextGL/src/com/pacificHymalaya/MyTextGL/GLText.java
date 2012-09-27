@@ -496,11 +496,10 @@ public class GLText {
 	// --Draw Font Texture--//
 	// D: draw the entire font texture (NOTE: for testing purposes only)
 	// A: width, height - the width and height of the area to draw to. this is
-	// used
-	// to draw the texture to the top-left corner.
+	// used to draw the texture to the top-left corner.
 	public void drawTexture(int width, int height) {
-		batch.beginBatch(textureId, mCurrentColor); // Begin Batch (Bind
-													// Texture)
+		// Begin Batch (Bind Texture)
+		batch.beginBatch(textureId, mCurrentColor); 
 		batch.drawSprite(textureSize / 2, height - (textureSize / 2),
 				textureSize, textureSize, textureRgn); // Draw
 		batch.endBatch(); // End Batch
