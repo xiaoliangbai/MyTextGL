@@ -71,6 +71,7 @@ public class TextGLRenderer implements GLSurfaceView.Renderer {
 		Matrix.multiplyMM(mModelMatrix, 0, mVMatrix, 0, mModelMatrix, 0);
 		Matrix.multiplyMM(mMVPMatrix, 0, mOrthProjMatrix, 0, mModelMatrix, 0);
 		glText.drawCB();
+		//glText.setScale(0.1f);
 		glText.drawTexture(width, height); // Draw the Entire Texture
 		
 //		Log.d(TAG, "height = " + height + ", width = " + width);

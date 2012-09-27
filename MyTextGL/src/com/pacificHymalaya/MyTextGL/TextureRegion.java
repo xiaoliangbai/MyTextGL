@@ -8,7 +8,7 @@ class TextureRegion {
 
    //--Constructor--//
    // D: calculate U,V coordinates from specified texture coordinates
-   // A: texWidth, texHeight - the width and height of the texture the region is for
+   // A: texWidth, texHeight - the width and height of the complete texture region
    //    x, y - the top/left (x,y) of the region on the texture (in pixels)
    //    width, height - the width and height of the region on the texture (in pixels)
    public TextureRegion(float texWidth, float texHeight, 

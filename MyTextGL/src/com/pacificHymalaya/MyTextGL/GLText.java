@@ -281,9 +281,10 @@ public class GLText {
 		GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, bitmap, 0);
 		// release the bitmap
 		bitmap.recycle(); // Release the Bitmap
-
+		// Sanity check
 		if (textureId == 0) {
-			throw new RuntimeException("Error loading texture.");
+			throw new RuntimeException(
+					"Error found during generating texture for dynamic font display. TextureId == 0");
 		}
 
 		// setup the array of character texture regions
@@ -350,22 +351,22 @@ public class GLText {
 	// descent)
 	// R: [none]
 	public void draw(String text, float x, float y) {
-		float chrHeight = cellHeight * scaleY; // Calculate Scaled Character
-												// Height
-		float chrWidth = cellWidth * scaleX; // Calculate Scaled Character Width
+		// Calculate Scaled Character Height
+		float chrHeight = cellHeight * scaleY; 
+		// Calculate Scaled Character Width
+		float chrWidth = cellWidth * scaleX; 
 		int len = text.length(); // Get String Length
 		x += (chrWidth / 2.0f) - (fontPadX * scaleX); // Adjust Start X
 		y += (chrHeight / 2.0f) - (fontPadY * scaleY); // Adjust Start Y
 		for (int i = 0; i < len; i++) { // FOR Each Character in String
 			int c = (int) text.charAt(i) - CHAR_START; // Calculate Character
-														// Index (Offset by
-														// First Char in Font)
+			// Index (Offset by First Char in Font)
 			if (c < 0 || c >= CHAR_CNT) // IF Character Not In Font
 				c = CHAR_UNKNOWN; // Set to Unknown Character Index
-			batch.drawSprite(x, y, chrWidth, chrHeight, charRgn[c]); // Draw the
-																		// Character
-			x += (charWidths[c] + spaceX) * scaleX; // Advance X Position by
-													// Scaled Character Width
+			// Draw the Character
+			batch.drawSprite(x, y, chrWidth, chrHeight, charRgn[c]); 
+			// Advance X Position by Scaled Character Width
+			x += (charWidths[c] + spaceX) * scaleX;
 		}
 	}
 

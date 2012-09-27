@@ -9,7 +9,7 @@ public class SpriteBatch {
 
 	final private static String TAG ="SpriteBatch";  
    //--Constants--//
-   final static int VERTEX_SIZE = 8;                  // Vertex Size (in Components) ie. (X,Y,U,V,R,B,G,A)
+   final static int VERTEX_SIZE = 9;                  // Vertex Size (in Components) ie. (X,Y,Z, U,V,R,B,G,A)
    final static int VERTICES_PER_SPRITE = 4;          // Vertices Per Sprite
    final static int INDICES_PER_SPRITE = 6;           // Indices Per Sprite
 
@@ -29,17 +29,18 @@ public class SpriteBatch {
    // A: gl - the gl instance to use for rendering
    //    maxSprites - the maximum allowed sprites per batch
    public SpriteBatch( int maxSprites, int programHandle, float [] mvpMatrix)  {
-//      this.gl = gl;                                   // Save GL Instance
+
       this.vertexBuffer = new float[maxSprites * VERTICES_PER_SPRITE * VERTEX_SIZE];  // Create Vertex Buffer
-      this.vertices = new Vertices( programHandle, mvpMatrix, maxSprites * VERTICES_PER_SPRITE, maxSprites * INDICES_PER_SPRITE, true, true, true );  // Create Rendering Vertices
-      this.bufferIndex = 0;                           // Reset Buffer Index
-      this.maxSprites = maxSprites;                   // Save Maximum Sprites
+      this.vertices = new Vertices( programHandle, mvpMatrix, maxSprites * VERTICES_PER_SPRITE, maxSprites * INDICES_PER_SPRITE, true, true, false );  // Create Rendering Vertices
+      this.bufferIndex = 0;                            // Reset Buffer Index
+      this.maxSprites = maxSprites;             // Save Maximum Sprites
       this.numSprites = 0;                            // Clear Sprite Counter
 
       short[] indices = new short[maxSprites * INDICES_PER_SPRITE];  // Create Temp Index Buffer
-      int len = indices.length;                       // Get Index Buffer Length
+      int len = indices.length;                 // Get Index Buffer Length
       short j = 0;                                    // Counter
-      for ( int i = 0; i < len; i+= INDICES_PER_SPRITE, j += VERTICES_PER_SPRITE )  {  // FOR Each Index Set (Per Sprite)
+    // FOR Each Index Set (Per Sprite)
+      for ( int i = 0; i < len; i+= INDICES_PER_SPRITE, j += VERTICES_PER_SPRITE )  {  
          indices[i + 0] = (short)( j + 0 );           // Calculate Index 0
          indices[i + 1] = (short)( j + 1 );           // Calculate Index 1
          indices[i + 2] = (short)( j + 2 );           // Calculate Index 2
@@ -52,16 +53,16 @@ public class SpriteBatch {
 
    //--Begin Batch--//
    // D: signal the start of a batch. set the texture and clear buffer
-   //    NOTE: the overloaded (non-texture) version assumes that the texture is already bound!
+   // NOTE: the overloaded (non-texture) version assumes that the texture is already bound!
    // A: textureId - the ID of the texture to use for the batch
    // A: colorV - the color vector, R,B,G,A
    // R: [none]
    public void beginBatch(int textureId, float[] colorV)  {
-	  GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
-	  GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureId); //Bind the Texture
-//      gl.glBindTexture( GL10.GL_TEXTURE_2D, textureId );  // Bind the Texture
-      numSprites = 0;                                 // Empty Sprite Counter
-      bufferIndex = 0;                                // Reset Buffer Index (Empty)
+   // GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
+   // GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureId); //Bind the Texture
+   // gl.glBindTexture( GL10.GL_TEXTURE_2D, textureId );  // Bind the Texture
+      numSprites = 0;                               // Empty Sprite Counter
+      bufferIndex = 0;                               // Reset Buffer Index (Empty)
       this.colorV = colorV;							 //point to current color vector
       this.vertices.setTextureId(textureId);
    }
@@ -102,13 +103,12 @@ public class SpriteBatch {
          bufferIndex = 0;                           // Reset Buffer Index (Empty)
       }
       
-      float factor = 1.0f;
       float halfWidth = width / 2.0f;                 // Calculate Half Width
       float halfHeight = height / 2.0f;               // Calculate Half Height
-      float x1 = (x - halfWidth)*factor;                       // Calculate Left X
-      float y1 = (y - halfHeight)*factor;                      // Calculate Bottom Y
-      float x2 = (x + halfWidth)*factor;                       // Calculate Right X
-      float y2 = (y + halfHeight)*factor;                      // Calculate Top Y
+      float x1 = x - halfWidth;                       // Calculate Left X
+      float y1 = y - halfHeight;                      // Calculate Bottom Y
+      float x2 = x + halfWidth;                       // Calculate Right X
+      float y2 = y + halfHeight;                      // Calculate Top Y
       float z = -2.0f;
       Log.d(TAG, "drawSprite x,y,z = " + x1 + ", " + y1 + ", " + z);
       

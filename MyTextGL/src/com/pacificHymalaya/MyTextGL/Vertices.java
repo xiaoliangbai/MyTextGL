@@ -112,22 +112,26 @@ public void setTextureId(int textureId) {
    //    length - number of floats in the vertex array (total)
    //             for easy setting use: vtx_cnt * (this.vertexSize / 4)
    // R: [none]
-   public void setVertices(float[] vertices, int offset, int length)  {
-      this.vertices.clear();                          // Remove Existing Vertices
-      int last = offset + length;                     // Calculate Last Element
-      for ( int i = offset, j = 0; i < last; i++, j++ )  // FOR Each Specified Vertex
-    	// Set Vertex as Raw Integer Bits in Buffer
-         tmpBuffer[j] = Float.floatToRawIntBits( vertices[i] );  
-	float[] finalPosData = new float[last];
+	public void setVertices(float[] vertices, int offset, int length) {
+		this.vertices.clear(); // Remove Existing Vertices
+		int last = offset + length; // Calculate Last Element
+		for (int i = offset, j = 0; i < last; i++, j++)
+			// FOR Each Specified Vertex
+			// Set Vertex as Raw Integer Bits in Buffer
+			tmpBuffer[j] = Float.floatToRawIntBits(vertices[i]);
+
+		float[] finalPosData = new float[last];
 		for (int i = offset, j = 0; i < last; i++, j++) {
 			finalPosData[j] = vertices[i];
 		}
-		this.vertices.put( finalPosData,0, length);
-//      this.vertices.put( tmpBuffer, 0, length );      // Set New Vertices
-      this.vertices.flip();                           // Flip Vertex Buffer
-      this.numVertices = length / this.vertexStride;  // Save Number of Vertices
-      //this.numVertices = length / ( this.vertexSize / 4 );  // Save Number of Vertices
-   }
+		this.vertices.put(finalPosData, 0, length);
+		// this.vertices.put( tmpBuffer, 0, length ); // Set New Vertices
+		this.vertices.flip(); // Flip Vertex Buffer
+		// Save Number of Vertices
+		this.numVertices = length / this.vertexStride; 
+		// this.numVertices = length / ( this.vertexSize / 4 ); // Save Number
+		// of Vertices
+	}
 
    //--Set Indices--//
    // D: set the specified indices in the index buffer
@@ -157,12 +161,12 @@ public void setTextureId(int textureId) {
 	   textureCoordHandle =  GLES20.glGetAttribLocation(mProgramHandle,
 				"a_texCoord");   
 	   textureUniformHandle = GLES20.glGetUniformLocation(mProgramHandle, "s_texture");
-	   
+	   // Pass in the mvp matrix
 	   GLES20.glUniformMatrix4fv(mvpMatrixHandle, 1, false, mvpMatrix, 0);
 	   
       vertices.position( 0 );                         // Set Vertex Buffer to Position
       GLES20.glVertexAttribPointer(vertexPositionHandle, positionCnt,
-				GLES20.GL_INT, false, vertexStride, vertices); // Set Vertex Pointer
+				GLES20.GL_FLOAT, false, vertexStride, vertices); // Set Vertex Pointer
       GLES20.glEnableVertexAttribArray(vertexPositionHandle); // // Enable Position in Vertices
 
       if ( hasColor )  {                              // IF Vertices Have Color
@@ -180,7 +184,7 @@ public void setTextureId(int textureId) {
          GLES20.glEnableVertexAttribArray(textureCoordHandle); // Enable Texture Coords Pointer
 		 GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
 		 GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureId);
-		 GLES20.glUniform1i(textureUniformHandle, GLES20.GL_TEXTURE0);
+		 GLES20.glUniform1i(textureUniformHandle, 0);
       }
       if ( hasNormals )  {
        //ToDo -- Add processing for Normal
