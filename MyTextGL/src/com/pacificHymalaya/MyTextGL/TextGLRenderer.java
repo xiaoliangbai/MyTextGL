@@ -42,7 +42,7 @@ public class TextGLRenderer implements GLSurfaceView.Renderer {
 		final float right = ratio;
 		final float bottom = -1.0f;
 		final float top = 1.0f;
-		final float near = 2.0f;
+		final float near = 1.0f;
 		final float far = 10.0f;
 		// Matrix.frustumM(mProjMatrix, 0, left, right, bottom, top, near, far);
 		// Matrix.orthoM(mOrthProjMatrix, 0, left, right, bottom, top, near, far);
@@ -56,7 +56,7 @@ public class TextGLRenderer implements GLSurfaceView.Renderer {
 		setupCameraView();
 		
         // Clear the color buffer
-        GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
+        GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT  | GLES20.GL_DEPTH_BUFFER_BIT);
         
 		GLES20.glEnable(GLES20.GL_BLEND);
 		GLES20.glBlendFunc(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);
@@ -68,16 +68,16 @@ public class TextGLRenderer implements GLSurfaceView.Renderer {
 		glText.drawCB();
 		
 		Matrix.setIdentityM(mModelMatrix, 0);
-//		Matrix.translateM(mModelMatrix, 0, 0.5f*width, 0.5f*height, -1.0f);
-		Matrix.translateM(mModelMatrix, 0, 100.0f, 0.0f, -1.0f);
+		Matrix.translateM(mModelMatrix, 0, 0, 0, -3.0f);
 		Matrix.multiplyMM(mModelMatrix, 0, mVMatrix, 0, mModelMatrix, 0);
 		Matrix.multiplyMM(mMVPMatrix, 0, mOrthProjMatrix, 0, mModelMatrix, 0);
 		glText.drawCB();
-		//glText.setScale(0.1f);
 		glText.drawTexture(width, height); // Draw the Entire Texture
-//		glText.begin(0.0f, 1.0f, 0.0f, 0.5f); 
-//		glText.draw("Test", 0.5f*width, 0.5f*height); // Draw Test String
 		Log.d(TAG, "Screen size: height = " + height + ", width = " + width);
+		glText.begin(0.0f, 1.0f, 0.0f, 0.5f);
+		glText.setSpace(4.0f);
+		glText.draw("Test", 0, 0.8f*height); // Draw Test String
+		glText.end(); // End Text Rendering
 //		// TEST: render some strings with the font
 //		glText.begin(1.0f, 1.0f, 1.0f, 0.5f); // Begin Text Rendering (Set Color WHITE)
 //		glText.draw("Test String :)", 0, 0); // Draw Test String
@@ -99,7 +99,7 @@ public class TextGLRenderer implements GLSurfaceView.Renderer {
 		// Position the eye in front of the origin.
 		final float eyeX = 0.0f;
 		final float eyeY = 0.0f;
-		final float eyeZ = 1.0f;
+		final float eyeZ = 0.0f;
 
 		// We are looking toward the distance
 		final float lookX = 0.0f;
@@ -129,10 +129,10 @@ public class TextGLRenderer implements GLSurfaceView.Renderer {
 		GLES20.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
 		// Use culling to remove back faces.
-//		GLES20.glEnable(GLES20.GL_CULL_FACE);
+		GLES20.glEnable(GLES20.GL_CULL_FACE);
 
 		// Enable depth testing
-//		GLES20.glEnable(GLES20.GL_DEPTH_TEST);
+		GLES20.glEnable(GLES20.GL_DEPTH_TEST);
 
 		glText = new GLText(mActivityContext, mMVPMatrix);
 

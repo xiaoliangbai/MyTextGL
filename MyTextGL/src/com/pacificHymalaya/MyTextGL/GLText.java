@@ -98,7 +98,6 @@ public class GLText {
 	Bitmap mBitmap;
 	
 	void drawCB() {
-
 		cb.draw(mMVPMatrix, 15.0f);
 	}
 
@@ -113,9 +112,9 @@ public class GLText {
 		this.mMVPMatrix = mvpMatrix;
 		this.assets = mContext.getAssets(); // Save the Asset Manager Instance
 		this.mCurrentColor = new float[4];
-		this.mCurrentColor[0] = 0.5f;
-		this.mCurrentColor[1] = 0.6f;
-		this.mCurrentColor[2] = 0.7f;
+		this.mCurrentColor[0] = 1.f;
+		this.mCurrentColor[1] = 0.0f;
+		this.mCurrentColor[2] = 0.0f;
 		this.mCurrentColor[3] = 1.0f;
 
 		charWidths = new float[CHAR_CNT]; // Create the Array of Character
@@ -249,8 +248,10 @@ public class GLText {
 		// Create Canvas for Rendering to Bitmap
 		Canvas canvas = new Canvas(mBitmap); 
 		mBitmap.eraseColor(0x00000000); // Set Transparent Background (ARGB)
-		//draw a rectangle to cover the whole area, for debug purpose 
-		 canvas.drawRect(0.0f, textureSize, textureSize, 0.0f, paint);
+		//draw a rectangle to cover the whole area, for debug purpose
+		paint.setStyle(Paint.Style.STROKE);  
+		canvas.drawRect(0.0f, textureSize, textureSize, 0.0f, paint);
+		paint.setStyle(Paint.Style.FILL_AND_STROKE); 
 		// calculate rows/columns
 		// NOTE: while not required for anything, these may be useful to have :)
 		colCnt = textureSize / cellWidth; // Calculate Number of Columns
@@ -387,8 +388,9 @@ public class GLText {
 			batch.drawSprite(x, y, chrWidth, chrHeight, charRgn[c]); 
 			// Advance X Position by Scaled Character Width
 			x += (charWidths[c] + spaceX) * scaleX;
-		    Log.d(TAG, "charWidths, spaceX = "+ 
-		    	      + charWidths[c] + ", " + spaceX);
+//			x += (chrWidth + spaceX) * scaleX;
+		    Log.d(TAG, "charWidths, chrWidth, spaceX = "+ 
+		    	      + charWidths[c] + ", " + chrWidth + ", " + spaceX);
 		}
 	}
 
@@ -521,8 +523,9 @@ public class GLText {
 	// used to draw the texture to the top-left corner.
 	public void drawTexture(int width, int height) {
 		// Begin Batch (Bind Texture)
-		batch.beginBatch(textureId, mCurrentColor); 
-		batch.drawSprite(textureSize/2, height - (textureSize / 2),
+		float [] colorV = {1.0f, 0.0f, 1.0f, 0.5f};
+		batch.beginBatch(textureId, colorV); 
+		batch.drawSprite(textureSize/2, (textureSize / 2),
 				textureSize, textureSize, textureRgn); // Draw
 		batch.endBatch(); // End Batch
 	}
