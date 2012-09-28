@@ -9,17 +9,27 @@
 
 package com.pacificHymalaya.MyTextGL;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import android.content.*;
 import javax.microedition.khronos.opengles.GL10;
 import android.opengl.GLES20;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.opengl.GLUtils;
+import android.os.Environment;
+import android.util.Log;
 
 public class GLText {
 
+	private final String TAG = "GLText";
 	// --Constants--//
 	public final static int CHAR_START = 32; // First Character (ASCII Code)
 	public final static int CHAR_END = 126; // Last Character (ASCII Code)
@@ -39,6 +49,7 @@ public class GLText {
 
 	// --Members--//
 	// GL10 gl; // GL10 Instance
+	Context mContext;
 	AssetManager assets; // Asset Manager
 	SpriteBatch batch; // Batch Renderer
 
@@ -77,13 +88,15 @@ public class GLText {
 	final String mFragmentShader = "precision mediump float; \n"
 			+ "uniform sampler2D s_texture; \n" + "varying vec4 v_color;\n"
 			+ "varying vec2 v_texCoord; \n" + "void main() { \n"
-			+ "  gl_FragColor = texture2D(s_texture, v_texCoord); \n" + " }\n";
+			+ "  gl_FragColor = v_color * texture2D(s_texture, v_texCoord); \n" + " }\n";
 
 	private float[] mMVPMatrix;
 
 	/** This is a handle to our per-vertex cube shading program. */
 	private int mGLTextProgramHandle;
 
+	Bitmap mBitmap;
+	
 	void drawCB() {
 
 		cb.draw(mMVPMatrix, 15.0f);
@@ -93,10 +106,12 @@ public class GLText {
 	// D: save GL instance + asset manager, create arrays, and initialize the
 	// members
 	// A: gl - OpenGL ES 10 Instance
-	public GLText(AssetManager assets, float[] mvpMatrix) {
+	public GLText(Context context, float[] mvpMatrix) {
+		
 		// this.gl = gl; // Save the GL10 Instance
+		this.mContext = context;
 		this.mMVPMatrix = mvpMatrix;
-		this.assets = assets; // Save the Asset Manager Instance
+		this.assets = mContext.getAssets(); // Save the Asset Manager Instance
 		this.mCurrentColor = new float[4];
 		this.mCurrentColor[0] = 0.5f;
 		this.mCurrentColor[1] = 0.6f;
@@ -229,12 +244,13 @@ public class GLText {
 			textureSize = 2048; // Set 2048 Texture Size
 
 		// create an empty bitmap (alpha only)
-		Bitmap bitmap = Bitmap.createBitmap(textureSize, textureSize,
-				Bitmap.Config.ALPHA_8); // Create Bitmap
-		Canvas canvas = new Canvas(bitmap); // Create Canvas for Rendering to
-											// Bitmap
-		bitmap.eraseColor(0x00000000); // Set Transparent Background (ARGB)
-
+//		mBitmap = Bitmap.createBitmap(textureSize, textureSize, Bitmap.Config.ALPHA_8);
+		mBitmap = Bitmap.createBitmap( textureSize, textureSize, Bitmap.Config.ARGB_8888 ); 
+		// Create Canvas for Rendering to Bitmap
+		Canvas canvas = new Canvas(mBitmap); 
+		mBitmap.eraseColor(0x00000000); // Set Transparent Background (ARGB)
+		//draw a rectangle to cover the whole area, for debug purpose 
+		 canvas.drawRect(0.0f, textureSize, textureSize, 0.0f, paint);
 		// calculate rows/columns
 		// NOTE: while not required for anything, these may be useful to have :)
 		colCnt = textureSize / cellWidth; // Calculate Number of Columns
@@ -254,10 +270,11 @@ public class GLText {
 				x = fontPadX; // Set X for New Row
 				y += cellHeight; // Move Down a Row
 			}
+			
 		}
 		s[0] = CHAR_NONE; // Set Character to Use for NONE
 		canvas.drawText(s, 0, 1, x, y, paint); // Draw Character
-
+		saveBitmap("fontMap.png");
 		// generate a new texture
 		int[] textureIds = new int[1]; // Array to Get Texture Id
 		GLES20.glGenTextures(1, textureIds, 0); // Generate New Texture
@@ -278,9 +295,12 @@ public class GLText {
 		GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_T,
 				GLES20.GL_CLAMP_TO_EDGE); 
 		// load the generated bitmap onto the texture
-		GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, bitmap, 0);
+		GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, mBitmap, 0);
+		
+
 		// release the bitmap
-		bitmap.recycle(); // Release the Bitmap
+		mBitmap.recycle();
+		
 		// Sanity check
 		if (textureId == 0) {
 			throw new RuntimeException(
@@ -367,6 +387,8 @@ public class GLText {
 			batch.drawSprite(x, y, chrWidth, chrHeight, charRgn[c]); 
 			// Advance X Position by Scaled Character Width
 			x += (charWidths[c] + spaceX) * scaleX;
+		    Log.d(TAG, "charWidths, spaceX = "+ 
+		    	      + charWidths[c] + ", " + spaceX);
 		}
 	}
 
@@ -500,9 +522,24 @@ public class GLText {
 	public void drawTexture(int width, int height) {
 		// Begin Batch (Bind Texture)
 		batch.beginBatch(textureId, mCurrentColor); 
-		batch.drawSprite(textureSize / 2, height - (textureSize / 2),
+		batch.drawSprite(textureSize/2, height - (textureSize / 2),
 				textureSize, textureSize, textureRgn); // Draw
 		batch.endBatch(); // End Batch
 	}
 
+	private void saveBitmap(String fileName) {
+		String mFilePath = Environment.getExternalStorageDirectory().toString() + File.separator.toString() + fileName;
+		//write the bytes in file
+		try {
+			FileOutputStream fo = new FileOutputStream(mFilePath);
+			mBitmap.compress(Bitmap.CompressFormat.PNG, 60, fo);
+			fo.flush();
+			fo.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
+	
 }

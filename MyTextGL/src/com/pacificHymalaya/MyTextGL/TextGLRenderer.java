@@ -44,8 +44,9 @@ public class TextGLRenderer implements GLSurfaceView.Renderer {
 		final float top = 1.0f;
 		final float near = 2.0f;
 		final float far = 10.0f;
-//		Matrix.frustumM(mProjMatrix, 0, left, right, bottom, top, near, far);
-//		Matrix.orthoM(mOrthProjMatrix, 0, left, right, bottom, top, near, far);
+		// Matrix.frustumM(mProjMatrix, 0, left, right, bottom, top, near, far);
+		// Matrix.orthoM(mOrthProjMatrix, 0, left, right, bottom, top, near, far);
+		// Set the projection matrix to match with screen display
 		Matrix.orthoM(mOrthProjMatrix, 0, 0, width, 0, height, near, far);
 	}
 
@@ -67,14 +68,16 @@ public class TextGLRenderer implements GLSurfaceView.Renderer {
 		glText.drawCB();
 		
 		Matrix.setIdentityM(mModelMatrix, 0);
-		Matrix.translateM(mModelMatrix, 0, 0.5f*width, 0.5f*height, -1.0f);
+//		Matrix.translateM(mModelMatrix, 0, 0.5f*width, 0.5f*height, -1.0f);
+		Matrix.translateM(mModelMatrix, 0, 100.0f, 0.0f, -1.0f);
 		Matrix.multiplyMM(mModelMatrix, 0, mVMatrix, 0, mModelMatrix, 0);
 		Matrix.multiplyMM(mMVPMatrix, 0, mOrthProjMatrix, 0, mModelMatrix, 0);
 		glText.drawCB();
 		//glText.setScale(0.1f);
 		glText.drawTexture(width, height); // Draw the Entire Texture
-		glText.draw("Test String :)", 0.5f*width, 0.5f*height); // Draw Test String
-//		Log.d(TAG, "height = " + height + ", width = " + width);
+//		glText.begin(0.0f, 1.0f, 0.0f, 0.5f); 
+//		glText.draw("Test", 0.5f*width, 0.5f*height); // Draw Test String
+		Log.d(TAG, "Screen size: height = " + height + ", width = " + width);
 //		// TEST: render some strings with the font
 //		glText.begin(1.0f, 1.0f, 1.0f, 0.5f); // Begin Text Rendering (Set Color WHITE)
 //		glText.draw("Test String :)", 0, 0); // Draw Test String
@@ -83,12 +86,12 @@ public class TextGLRenderer implements GLSurfaceView.Renderer {
 //		glText.end(); // End Text Rendering
 //
 //		glText.begin(0.5f, 0.0f, 1.0f, 1.0f); // Begin Text Rendering (Set Color
-//												// BLUE)
+//	    BLUE)
 //		glText.draw("More Lines...", 5, 5); // Draw Test String
 //		glText.draw("The End.", 5, 5 + glText.getCharHeight()); // Draw Test
 //																	// String
 //		glText.end(); // End Text Rendering
-		// disable blend
+// 		disable blend
 		GLES20.glDisable(GLES20.GL_BLEND);
 	}
 
@@ -131,7 +134,7 @@ public class TextGLRenderer implements GLSurfaceView.Renderer {
 		// Enable depth testing
 //		GLES20.glEnable(GLES20.GL_DEPTH_TEST);
 
-		glText = new GLText(mActivityContext.getAssets(), mMVPMatrix);
+		glText = new GLText(mActivityContext, mMVPMatrix);
 
 		// Load the font from file (set size + padding), creates the texture
 		// NOTE: after a successful call to this the font is ready for

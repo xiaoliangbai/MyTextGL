@@ -110,7 +110,8 @@ public class SpriteBatch {
       float x2 = x + halfWidth;                       // Calculate Right X
       float y2 = y + halfHeight;                      // Calculate Top Y
       float z = -2.0f;
-      Log.d(TAG, "drawSprite x,y,z = " + x1 + ", " + y1 + ", " + z);
+      Log.d(TAG, "drawSprite x1,x2,y1,y2,z = " 
+      + x1 + ", " + x2 + ", " + y1  + ", " + y2 + "," + z);
       
       vertexBuffer[bufferIndex++] = x1;               // Add X for Vertex 0
       vertexBuffer[bufferIndex++] = y1;               // Add Y for Vertex 0
