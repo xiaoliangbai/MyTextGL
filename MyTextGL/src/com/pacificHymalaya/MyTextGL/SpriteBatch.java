@@ -14,22 +14,21 @@ public class SpriteBatch {
 	final private static String TAG ="SpriteBatch";  
    //--Constants--//
    final static int VERTEX_SIZE = 9;                  // Vertex Size (in Components) ie. (X,Y,Z, U,V,R,B,G,A)
-   final static int VERTICES_PER_SPRITE = 4;          // Vertices Per Sprite
-   final static int INDICES_PER_SPRITE = 6;           // Indices Per Sprite
+   final static int VERTICES_PER_SPRITE = 4;      // Vertices Per Sprite
+   final static int INDICES_PER_SPRITE = 6;        // Indices Per Sprite
 
    //--Members--//
-//   GL10 gl;                                           // GL Instance
-   Vertices vertices;                                 // Vertices Instance Used for Rendering
-   float[] vertexBuffer;                              // Vertex Buffer
-   float[] posBuffer;								  // Vertex position buffer
-   float[] colorBuffer; 							  // Vertex color buffer
-   float[] textureCoordBuffer;						  // Vextex texture coordinate buffer
+   Vertices vertices;                                      // Vertices Instance Used for Rendering
+   float[] vertexBuffer;                                  // Vertex Buffer
+   float[] posBuffer;								      // Vertex position buffer
+   float[] colorBuffer; 							          // Vertex color buffer
+   float[] textureCoordBuffer;						  // Vertex texture coordinate buffer
    int posIndex;
    int colorIndex;
    int textureIndex;
-   int bufferIndex;                                   // Vertex Buffer Start Index
-   int maxSprites;                                    // Maximum Sprites Allowed in Buffer
-   int numSprites;                                    // Number of Sprites Currently in Buffer
+   int bufferIndex;                                        // Vertex Buffer Start Index
+   int maxSprites;                                        // Maximum Sprites Allowed in Buffer
+   int numSprites;                                        // Number of Sprites Currently in Buffer
    
    
 
@@ -40,10 +39,10 @@ public class SpriteBatch {
    
    //--Constructor--//
    // D: prepare the sprite batcher for specified maximum number of sprites
-   // A: gl - the gl instance to use for rendering
-   //    maxSprites - the maximum allowed sprites per batch
+   // A: maxSprites - the maximum allowed sprites per batch
+   //     programHandle - handle of the compiled and linked gl program
+   //     mvpMatrix - reference to the MVP matrix
    public SpriteBatch( int maxSprites, int programHandle, float [] mvpMatrix)  {
-
 	  this.mVertexProgramHandle = programHandle;
 	  this.mMvpMatrix = mvpMatrix;
       this.vertexBuffer = new float[maxSprites * VERTICES_PER_SPRITE * VERTEX_SIZE];  // Create Vertex Buffer
@@ -91,23 +90,26 @@ public class SpriteBatch {
       colorIndex = 0;
    }
    
-//   public void beginBatch()  {
-//      numSprites = 0;                                 // Empty Sprite Counter
-//      bufferIndex = 0;                                // Reset Buffer Index (Empty)
-//   }
 
    //--End Batch--//
    // D: signal the end of a batch. render the batched sprites
    // A: [none]
    // R: [none]
    public void endBatch()  {
-      if ( numSprites > 0 )  {                        // IF Any Sprites to Render
-    	  //turned off for debug purpose
-//         vertices.setVertices( vertexBuffer, 0, bufferIndex );  // Set Vertices from Buffer
-//         vertices.bind();                             // Bind Vertices
-//         vertices.draw( GL10.GL_TRIANGLES, 0, numSprites * INDICES_PER_SPRITE );  // Render Batched Sprites
-//         vertices.unbind();                           // Unbind Vertices
-         draw();
+	// IF Any Sprites to Render
+      if ( numSprites > 0 )  {
+  		GLES20.glDisable(GLES20.GL_DEPTH_TEST);
+  		  //To debug, turned off either element or array method
+  		 //element method (faster)
+  		 // Set Vertices from Buffer
+         vertices.setVertices( vertexBuffer, 0, bufferIndex );  
+         vertices.bind();                             // Bind Vertices
+         vertices.draw( GLES20.GL_TRIANGLES, 0, numSprites * INDICES_PER_SPRITE );  // Render Batched Sprites
+         vertices.unbind();                           // Unbind Vertices
+         
+         //array method
+         //draw();
+ 		GLES20.glEnable(GLES20.GL_DEPTH_TEST);
       }
    }
 
@@ -198,8 +200,8 @@ public class SpriteBatch {
       float x2 = x + halfWidth;                       // Calculate Right X
       float y2 = y + halfHeight;                      // Calculate Top Y
       float z = -2.0f;
-      Log.d(TAG, "drawSprite x1,x2,y1,y2,z = " 
-      + x1 + ", " + x2 + ", " + y1  + ", " + y2 + "," + z);
+//      Log.d(TAG, "drawSprite x1,x2,y1,y2,z = " 
+//      + x1 + ", " + x2 + ", " + y1  + ", " + y2 + "," + z);
       
       // p3(x1,y2)------------p2(x2,y2)
       //     |			  	       |

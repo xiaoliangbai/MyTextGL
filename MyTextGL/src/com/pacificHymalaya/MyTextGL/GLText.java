@@ -88,7 +88,10 @@ public class GLText {
 	final String mFragmentShader = "precision mediump float; \n"
 			+ "uniform sampler2D s_texture; \n" + "varying vec4 v_color;\n"
 			+ "varying vec2 v_texCoord; \n" + "void main() { \n"
-			+ "  gl_FragColor = v_color * texture2D(s_texture, v_texCoord); \n" + " }\n";
+			+"   vec4 texture = texture2D(s_texture, v_texCoord);\n"
+			+ "  gl_FragColor.rgb = v_color.rgb; \n"
+			+ "  gl_FragColor.a = texture.a;"
+			+ " }\n";
 
 	private float[] mMVPMatrix;
 
@@ -243,8 +246,8 @@ public class GLText {
 			textureSize = 2048; // Set 2048 Texture Size
 
 		// create an empty bitmap (alpha only)
-//		mBitmap = Bitmap.createBitmap(textureSize, textureSize, Bitmap.Config.ALPHA_8);
-		mBitmap = Bitmap.createBitmap( textureSize, textureSize, Bitmap.Config.ARGB_8888 ); 
+		mBitmap = Bitmap.createBitmap(textureSize, textureSize, Bitmap.Config.ALPHA_8);
+//		mBitmap = Bitmap.createBitmap( textureSize, textureSize, Bitmap.Config.ARGB_8888 ); 
 		// Create Canvas for Rendering to Bitmap
 		Canvas canvas = new Canvas(mBitmap); 
 		mBitmap.eraseColor(0x00000000); // Set Transparent Background (ARGB)
