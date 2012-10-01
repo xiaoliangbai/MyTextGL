@@ -108,7 +108,7 @@ public class SpriteBatch {
          vertices.unbind();                           // Unbind Vertices
          
          //array method
-         //draw();
+//         draw();
  		GLES20.glEnable(GLES20.GL_DEPTH_TEST);
       }
    }
@@ -288,45 +288,53 @@ public class SpriteBatch {
       vertexBuffer[bufferIndex++] = x1;               // Add X for Vertex 0
       vertexBuffer[bufferIndex++] = y1;               // Add Y for Vertex 0
       vertexBuffer[bufferIndex++] = z;               // Add Z for Vertex 0
-      vertexBuffer[bufferIndex++] = region.u1;        // Add U for Vertex 0
-      vertexBuffer[bufferIndex++] = region.v2;        // Add V for Vertex 0
+
       vertexBuffer[bufferIndex++] = colorV[0];        // Add R for Vertex 0
       vertexBuffer[bufferIndex++] = colorV[1];        // Add G for Vertex 0
       vertexBuffer[bufferIndex++] = colorV[2];        // Add B for Vertex 0
       vertexBuffer[bufferIndex++] = colorV[3];        // Add A for Vertex 0
       
+      vertexBuffer[bufferIndex++] = region.u1;        // Add U for Vertex 0
+      vertexBuffer[bufferIndex++] = region.v2;        // Add V for Vertex 0
+      
       //p1
       vertexBuffer[bufferIndex++] = x2;               // Add X for Vertex 1
       vertexBuffer[bufferIndex++] = y1;               // Add Y for Vertex 1
       vertexBuffer[bufferIndex++] = z;               // Add Z for Vertex 1
-      vertexBuffer[bufferIndex++] = region.u2;        // Add U for Vertex 1
-      vertexBuffer[bufferIndex++] = region.v2;        // Add V for Vertex 1
+
       vertexBuffer[bufferIndex++] = colorV[0];        // Add R for Vertex 1
       vertexBuffer[bufferIndex++] = colorV[1];        // Add G for Vertex 1
       vertexBuffer[bufferIndex++] = colorV[2];        // Add B for Vertex 1
       vertexBuffer[bufferIndex++] = colorV[3];        // Add A for Vertex 1
+      
+      vertexBuffer[bufferIndex++] = region.u2;        // Add U for Vertex 1
+      vertexBuffer[bufferIndex++] = region.v2;        // Add V for Vertex 1
 
       //p2
       vertexBuffer[bufferIndex++] = x2;               // Add X for Vertex 2
       vertexBuffer[bufferIndex++] = y2;               // Add Y for Vertex 2
       vertexBuffer[bufferIndex++] = z;               // Add Z for Vertex 2
-      vertexBuffer[bufferIndex++] = region.u2;        // Add U for Vertex 2
-      vertexBuffer[bufferIndex++] = region.v1;        // Add V for Vertex 2
+
       vertexBuffer[bufferIndex++] = colorV[0];        // Add R for Vertex 2
       vertexBuffer[bufferIndex++] = colorV[1];        // Add G for Vertex 2
       vertexBuffer[bufferIndex++] = colorV[2];        // Add B for Vertex 2
       vertexBuffer[bufferIndex++] = colorV[3];        // Add A for Vertex 2
+      
+      vertexBuffer[bufferIndex++] = region.u2;        // Add U for Vertex 2
+      vertexBuffer[bufferIndex++] = region.v1;        // Add V for Vertex 2
 
       //p3
       vertexBuffer[bufferIndex++] = x1;               // Add X for Vertex 3
       vertexBuffer[bufferIndex++] = y2;               // Add Y for Vertex 3
       vertexBuffer[bufferIndex++] = z;               // Add Z for Vertex 3
-      vertexBuffer[bufferIndex++] = region.u1;        // Add U for Vertex 3
-      vertexBuffer[bufferIndex++] = region.v1;        // Add V for Vertex 3
+
       vertexBuffer[bufferIndex++] = colorV[0];        // Add R for Vertex 3
       vertexBuffer[bufferIndex++] = colorV[1];        // Add G for Vertex 3
       vertexBuffer[bufferIndex++] = colorV[2];        // Add B for Vertex 3
       vertexBuffer[bufferIndex++] = colorV[3];        // Add A for Vertex 3
+      
+      vertexBuffer[bufferIndex++] = region.u1;        // Add U for Vertex 3
+      vertexBuffer[bufferIndex++] = region.v1;        // Add V for Vertex 3
   
       numSprites++;                                   // Increment Sprite Count
    }

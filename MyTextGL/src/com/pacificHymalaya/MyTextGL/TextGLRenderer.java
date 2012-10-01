@@ -74,7 +74,7 @@ public class TextGLRenderer implements GLSurfaceView.Renderer {
 		glText.drawCB();
 		glText.drawTexture(width, height); // Draw the Entire Texture
 		Log.d(TAG, "Screen size: height = " + height + ", width = " + width);
-		glText.begin(0.0f, 1.0f, 0.0f, 0.5f);
+		glText.begin(1.0f, 1.0f, 0.0f, 0.5f);
 		glText.setSpace(4.0f);
 		glText.draw("Test", 0, 0.8f*height); // Draw Test String
 		glText.end(); // End Text Rendering

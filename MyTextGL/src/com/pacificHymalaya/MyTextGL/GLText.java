@@ -246,15 +246,15 @@ public class GLText {
 			textureSize = 2048; // Set 2048 Texture Size
 
 		// create an empty bitmap (alpha only)
-		mBitmap = Bitmap.createBitmap(textureSize, textureSize, Bitmap.Config.ALPHA_8);
-//		mBitmap = Bitmap.createBitmap( textureSize, textureSize, Bitmap.Config.ARGB_8888 ); 
+//		mBitmap = Bitmap.createBitmap(textureSize, textureSize, Bitmap.Config.ALPHA_8);
+		mBitmap = Bitmap.createBitmap( textureSize, textureSize, Bitmap.Config.ARGB_8888 ); 
 		// Create Canvas for Rendering to Bitmap
 		Canvas canvas = new Canvas(mBitmap); 
 		mBitmap.eraseColor(0x00000000); // Set Transparent Background (ARGB)
 		//draw a rectangle to cover the whole area, for debug purpose
-		paint.setStyle(Paint.Style.STROKE);  
-		canvas.drawRect(0.0f, textureSize, textureSize, 0.0f, paint);
-		paint.setStyle(Paint.Style.FILL_AND_STROKE); 
+//		paint.setStyle(Paint.Style.STROKE);  
+//		canvas.drawRect(0.0f, textureSize, textureSize, 0.0f, paint);
+//		paint.setStyle(Paint.Style.FILL_AND_STROKE); 
 		// calculate rows/columns
 		// NOTE: while not required for anything, these may be useful to have :)
 		colCnt = textureSize / cellWidth; // Calculate Number of Columns
@@ -526,7 +526,7 @@ public class GLText {
 	// used to draw the texture to the top-left corner.
 	public void drawTexture(int width, int height) {
 		// Begin Batch (Bind Texture)
-		float [] colorV = {1.0f, 0.0f, 1.0f, 0.5f};
+		float [] colorV = {0.0f, 0.0f, 1.0f, 0.1f};
 		batch.beginBatch(textureId, colorV); 
 		batch.drawSprite(textureSize/2, (textureSize / 2),
 				textureSize, textureSize, textureRgn); // Draw

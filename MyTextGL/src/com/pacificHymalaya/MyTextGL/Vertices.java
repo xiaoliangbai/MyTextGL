@@ -6,6 +6,7 @@ import java.nio.ByteOrder;
 import java.nio.ShortBuffer;
 import java.nio.FloatBuffer;
 import android.opengl.GLES20;
+import android.util.Log;
 
 public class Vertices {
 
@@ -152,6 +153,7 @@ public class Vertices {
 	// A: [none]
 	// R: [none]
 	public void bind() {
+		GLES20.glUseProgram(mProgramHandle);
 		mvpMatrixHandle = GLES20.glGetUniformLocation(mProgramHandle,
 				"u_mvpMatrix");
 		vertexPositionHandle = GLES20.glGetAttribLocation(mProgramHandle,
@@ -214,7 +216,9 @@ public class Vertices {
 			indices.position(offset); 
 			// Draw Indexed
 			GLES20.glDrawElements(primitiveType, numVertices,
-					GLES20.GL_UNSIGNED_SHORT, indices); 
+					GLES20.GL_UNSIGNED_SHORT, indices);
+			Log.d("Vertices", "Draw elements with " + numVertices + " indices");
+			
 		} else { // ELSE No Indices Exist
 			// Draw Direct (Array)
 			GLES20.glDrawArrays(primitiveType, offset, numVertices); 
