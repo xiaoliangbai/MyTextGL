@@ -526,9 +526,9 @@ public class GLText {
 	// used to draw the texture to the top-left corner.
 	public void drawTexture(int width, int height) {
 		// Begin Batch (Bind Texture)
-		float [] colorV = {0.0f, 0.0f, 1.0f, 0.1f};
+		float [] colorV = {0.0f, 0.0f, 1.0f, 0.5f};
 		batch.beginBatch(textureId, colorV); 
-		batch.drawSprite(textureSize/2, (textureSize / 2),
+		batch.drawSprite(textureSize/2, textureSize/2,
 				textureSize, textureSize, textureRgn); // Draw
 		batch.endBatch(); // End Batch
 	}

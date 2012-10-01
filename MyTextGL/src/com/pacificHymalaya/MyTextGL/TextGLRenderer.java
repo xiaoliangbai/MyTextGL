@@ -46,16 +46,18 @@ public class TextGLRenderer implements GLSurfaceView.Renderer {
 		final float far = 10.0f;
 		// Matrix.frustumM(mProjMatrix, 0, left, right, bottom, top, near, far);
 		// Matrix.orthoM(mOrthProjMatrix, 0, left, right, bottom, top, near, far);
+		
 		// Set the projection matrix to match with screen display
 		Matrix.orthoM(mOrthProjMatrix, 0, 0, width, 0, height, near, far);
 	}
 
 	@Override
-	public void onDrawFrame(GL10 arg0) {
+	public void onDrawFrame(GL10 unused) {
+		
 		//setup camera view
 		setupCameraView();
 		
-        // Clear the color buffer
+        // Clear the color buffer and z buffer
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT  | GLES20.GL_DEPTH_BUFFER_BIT);
         
 		GLES20.glEnable(GLES20.GL_BLEND);
@@ -73,24 +75,22 @@ public class TextGLRenderer implements GLSurfaceView.Renderer {
 		Matrix.multiplyMM(mMVPMatrix, 0, mOrthProjMatrix, 0, mModelMatrix, 0);
 		glText.drawCB();
 		glText.drawTexture(width, height); // Draw the Entire Texture
-		Log.d(TAG, "Screen size: height = " + height + ", width = " + width);
+//		Log.d(TAG, "Screen size: height = " + height + ", width = " + width);
 		glText.begin(1.0f, 1.0f, 0.0f, 0.5f);
-		glText.setSpace(4.0f);
+		glText.setSpace(1.0f);
 		glText.draw("Test", 0, 0.8f*height); // Draw Test String
 		glText.end(); // End Text Rendering
-//		// TEST: render some strings with the font
-//		glText.begin(1.0f, 1.0f, 1.0f, 0.5f); // Begin Text Rendering (Set Color WHITE)
-//		glText.draw("Test String :)", 0, 0); // Draw Test String
-//		glText.draw("Line 1", 2, 2); // Draw Test String
-//		glText.draw("Line 2", 3, 3); // Draw Test String
-//		glText.end(); // End Text Rendering
-//
-//		glText.begin(0.5f, 0.0f, 1.0f, 1.0f); // Begin Text Rendering (Set Color
-//	    BLUE)
-//		glText.draw("More Lines...", 5, 5); // Draw Test String
-//		glText.draw("The End.", 5, 5 + glText.getCharHeight()); // Draw Test
-//																	// String
-//		glText.end(); // End Text Rendering
+	    // TEST: render some strings with the font
+	    glText.begin( 1.0f, 1.0f, 1.0f, 1.0f );         // Begin Text Rendering (Set Color WHITE)
+	    glText.draw( "Test String :-)", 0, 0 );          // Draw Test String
+	    glText.draw( "Line 1", 50, 50 );                // Draw Test String
+	    glText.draw( "Line 2", 100, 100 );              // Draw Test String
+	    glText.end();                                   // End Text Rendering
+
+	    glText.begin( 0.5f, 0.0f, 1.0f, 1.0f );         // Begin Text Rendering (Set Color BLUE)
+	    glText.draw( "More Lines...", 50, 150 );        // Draw Test String
+	    glText.draw( "The End.", 50, 150 + glText.getCharHeight() );  // Draw Test String
+	    glText.end();                                   // End Text Rendering
 // 		disable blend
 		GLES20.glDisable(GLES20.GL_BLEND);
 	}
@@ -140,7 +140,7 @@ public class TextGLRenderer implements GLSurfaceView.Renderer {
 		// NOTE: after a successful call to this the font is ready for
 		// rendering!
 		// Create Font (Height: 14 Pixels; X+Y Padding 2 Pixels)
-		glText.load("Roboto-Regular.ttf", 14, 2, 2); 
+		glText.load("Novelty Script plain.ttf", 18, 2, 2);
 
 	}
 
