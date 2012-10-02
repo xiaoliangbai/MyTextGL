@@ -100,15 +100,15 @@ public class SpriteBatch {
       if ( numSprites > 0 )  {
   		GLES20.glDisable(GLES20.GL_DEPTH_TEST);
   		  //To debug, turned off either element or array method
-  		 //element method (faster)
+  		 //element method (faster) with interlaced vertices, color, texture coordinates
   		 // Set Vertices from Buffer
          vertices.setVertices( vertexBuffer, 0, bufferIndex );  
          vertices.bind();                             // Bind Vertices
          vertices.draw( GLES20.GL_TRIANGLES, 0, numSprites * INDICES_PER_SPRITE );  // Render Batched Sprites
          vertices.unbind();                           // Unbind Vertices
          
-         //array method
-//         draw();
+         //drawArray method
+         //draw();
  		GLES20.glEnable(GLES20.GL_DEPTH_TEST);
       }
    }

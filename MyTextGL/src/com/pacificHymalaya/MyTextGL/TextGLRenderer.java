@@ -62,18 +62,11 @@ public class TextGLRenderer implements GLSurfaceView.Renderer {
         
 		GLES20.glEnable(GLES20.GL_BLEND);
 		GLES20.glBlendFunc(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);
-
-		Matrix.setIdentityM(mModelMatrix, 0);
-		Matrix.translateM(mModelMatrix, 0, 0.7f*width, 0.2f*height, -1.0f);
-		Matrix.multiplyMM(mModelMatrix, 0, mVMatrix, 0, mModelMatrix, 0);
-		Matrix.multiplyMM(mMVPMatrix, 0, mOrthProjMatrix, 0, mModelMatrix, 0);
-		glText.drawCB();
 		
 		Matrix.setIdentityM(mModelMatrix, 0);
 		Matrix.translateM(mModelMatrix, 0, 0, 0, -3.0f);
 		Matrix.multiplyMM(mModelMatrix, 0, mVMatrix, 0, mModelMatrix, 0);
 		Matrix.multiplyMM(mMVPMatrix, 0, mOrthProjMatrix, 0, mModelMatrix, 0);
-		glText.drawCB();
 		glText.drawTexture(width, height); // Draw the Entire Texture
 //		Log.d(TAG, "Screen size: height = " + height + ", width = " + width);
 		glText.begin(1.0f, 1.0f, 0.0f, 0.5f);
@@ -83,11 +76,13 @@ public class TextGLRenderer implements GLSurfaceView.Renderer {
 	    // TEST: render some strings with the font
 	    glText.begin( 1.0f, 1.0f, 1.0f, 1.0f );         // Begin Text Rendering (Set Color WHITE)
 	    glText.draw( "Test String :-)", 0, 0 );          // Draw Test String
+	    glText.setColor(1.0f, 0.0f, 0.0f, 0.5f);
+	    glText.draw("And let's start new ones");  //continue to draw, but in red color
 	    glText.draw( "Line 1", 50, 50 );                // Draw Test String
 	    glText.draw( "Line 2", 100, 100 );              // Draw Test String
 	    glText.end();                                   // End Text Rendering
 
-	    glText.begin( 0.5f, 0.0f, 1.0f, 1.0f );         // Begin Text Rendering (Set Color BLUE)
+	    glText.begin( 0.0f, 0.0f, 1.0f, 1.0f );         // Begin Text Rendering (Set Color BLUE)
 	    glText.draw( "More Lines...", 50, 150 );        // Draw Test String
 	    glText.draw( "The End.", 50, 150 + glText.getCharHeight() );  // Draw Test String
 	    glText.end();                                   // End Text Rendering
@@ -140,7 +135,7 @@ public class TextGLRenderer implements GLSurfaceView.Renderer {
 		// NOTE: after a successful call to this the font is ready for
 		// rendering!
 		// Create Font (Height: 14 Pixels; X+Y Padding 2 Pixels)
-		glText.load("Novelty Script plain.ttf", 18, 2, 2);
+		glText.load("Novelty Script plain.ttf", 14, 2, 2);
 
 	}
 

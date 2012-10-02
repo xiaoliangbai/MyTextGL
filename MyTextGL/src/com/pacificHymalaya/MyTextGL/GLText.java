@@ -9,17 +9,14 @@
 
 package com.pacificHymalaya.MyTextGL;
 
-import java.io.ByteArrayOutputStream;
+
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import android.content.*;
-import javax.microedition.khronos.opengles.GL10;
 import android.opengl.GLES20;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Typeface;
@@ -35,35 +32,34 @@ public class GLText {
 	public final static int CHAR_END = 126; // Last Character (ASCII Code)
 	public final static int CHAR_CNT = (((CHAR_END - CHAR_START) + 1) + 1);
 	// Character Count (Including Character to use for Unknown)
-
-	public final static int CHAR_NONE = 32; // Character to Use for Unknown
-											// (ASCII Code)
-	public final static int CHAR_UNKNOWN = (CHAR_CNT - 1); // Index of the
-															// Unknown Character
-
-	public final static int FONT_SIZE_MIN = 6; // Minumum Font Size (Pixels)
-	public final static int FONT_SIZE_MAX = 180; // Maximum Font Size (Pixels)
-
-	public final static int CHAR_BATCH_SIZE = 100; // Number of Characters to
-													// Render Per Batch
+	// Character to Use for Unknown (ASCII Code)
+	public final static int CHAR_NONE = 32; 
+	// Index of the Unknown Character
+	public final static int CHAR_UNKNOWN = (CHAR_CNT - 1); 
+	// Minumum Font Size (Pixels)
+	public final static int FONT_SIZE_MIN = 6;
+	// Maximum Font Size (Pixels)
+	public final static int FONT_SIZE_MAX = 180; 
+	// Number of Characters to Render Per Batch
+	public final static int CHAR_BATCH_SIZE = 100; 
 
 	// --Members--//
-	// GL10 gl; // GL10 Instance
 	Context mContext;
 	AssetManager assets; // Asset Manager
 	SpriteBatch batch; // Batch Renderer
-
-	int fontPadX, fontPadY; // Font Padding (Pixels; On Each Side, ie. Doubled
-							// on Both X+Y Axis)
+	// Font Padding (Pixels; On Each Side
+	// i.e. Doubled on Both X+Y Axis)
+	int fontPadX, fontPadY; 
 
 	float fontHeight; // Font Height (Actual; Pixels)
 	float fontAscent; // Font Ascent (Above Baseline; Pixels)
 	float fontDescent; // Font Descent (Below Baseline; Pixels)
-
-	int textureId; // Font Texture ID [NOTE: Public for Testing Purposes Only!]
-	int textureSize; // Texture Size for Font (Square) [NOTE: Public for Testing
-						// Purposes Only!]
-	TextureRegion textureRgn; // Full Texture Region
+	// Font Texture ID
+	private int textureId;
+	 // Texture Size for Font (Square)
+	private int textureSize;
+	// Full Texture Region
+	TextureRegion textureRgn; 
 
 	float charWidthMax; // Character Width (Maximum; Pixels)
 	float charHeight; // Character Height (Maximum; Pixels)
@@ -74,9 +70,10 @@ public class GLText {
 
 	float scaleX, scaleY; // Font Scale (X,Y Axis)
 	float spaceX; // Additional (X,Y Axis) Spacing (Unscaled)
+	float lastX, lastY; //book keeping of the last X,Y
+	//holder for current color in {R G B A}
+	float[] mCurrentColor; 
 
-	float[] mCurrentColor; // R G B A
-	private ControlButton cb; // control button
 
 	final String mVertexShader = "uniform mat4 u_mvpMatrix; \n"
 			+ "attribute vec4 a_position; \n" + "attribute vec2 a_texCoord; \n"
@@ -100,34 +97,27 @@ public class GLText {
 
 	Bitmap mBitmap;
 	
-	void drawCB() {
-		cb.draw(mMVPMatrix, 15.0f);
-	}
-
 	// --Constructor--//
-	// D: save GL instance + asset manager, create arrays, and initialize the
-	// members
-	// A: gl - OpenGL ES 10 Instance
 	public GLText(Context context, float[] mvpMatrix) {
-		
-		// this.gl = gl; // Save the GL10 Instance
 		this.mContext = context;
 		this.mMVPMatrix = mvpMatrix;
-		this.assets = mContext.getAssets(); // Save the Asset Manager Instance
+		this.assets = mContext.getAssets(); 
 		this.mCurrentColor = new float[4];
-		this.mCurrentColor[0] = 1.f;
-		this.mCurrentColor[1] = 0.0f;
-		this.mCurrentColor[2] = 0.0f;
-		this.mCurrentColor[3] = 1.0f;
-
-		charWidths = new float[CHAR_CNT]; // Create the Array of Character
-											// Widths
-		charRgn = new TextureRegion[CHAR_CNT]; // Create the Array of Character
-												// Regions
-
+		//Default color -- Red
+		this.mCurrentColor[0] = 1.0f; // R
+		this.mCurrentColor[1] = 0.0f; // G
+		this.mCurrentColor[2] = 0.0f; // B
+		this.mCurrentColor[3] = 1.0f; // A
+		// Create the Array of Character Widths
+		charWidths = new float[CHAR_CNT];
+		// Create the Array of Character Regions
+		charRgn = new TextureRegion[CHAR_CNT]; 
 		// initialize remaining members
 		fontPadX = 0;
 		fontPadY = 0;
+		
+		lastX = 0.0f;
+		lastY = 0.0f;
 
 		fontHeight = 0.0f;
 		fontAscent = 0.0f;
@@ -159,8 +149,7 @@ public class GLText {
 				mMVPMatrix); // Create Sprite Batch
 		// (with Defined Size)
 		// Add program to OpenGL ES environment
-		GLES20.glUseProgram(mGLTextProgramHandle);
-		cb = new ControlButton();
+//		GLES20.glUseProgram(mGLTextProgramHandle);
 	}
 
 	// --Load Font--//
@@ -354,18 +343,23 @@ public class GLText {
 		mCurrentColor[1] = green;
 		mCurrentColor[2] = blue;
 		mCurrentColor[3] = alpha;
-		// gl.glColor4f(red, green, blue, alpha); // Set Color+Alpha
-		// gl.glBindTexture(GL10.GL_TEXTURE_2D, textureId); // Bind the Texture
 		batch.beginBatch(textureId, mCurrentColor); // Begin Batch
 	}
 
+	public void setColor(float red, float green, float blue, float alpha) {
+		mCurrentColor[0] = red;
+		mCurrentColor[1] = green;
+		mCurrentColor[2] = blue;
+		mCurrentColor[3] = alpha;
+	}
+	
 	public void end() {
 		batch.endBatch(); // End Batch
+		// restore color to default white
 		mCurrentColor[0] = 1.0f;
 		mCurrentColor[1] = 1.0f;
 		mCurrentColor[2] = 1.0f;
 		mCurrentColor[3] = 1.0f;
-		// gl.glColor4f(1.0f, 1.0f, 1.0f, 1.0f); // Restore Default Color/Alpha
 	}
 
 	// --Draw Text--//
@@ -391,12 +385,40 @@ public class GLText {
 			batch.drawSprite(x, y, chrWidth, chrHeight, charRgn[c]); 
 			// Advance X Position by Scaled Character Width
 			x += (charWidths[c] + spaceX) * scaleX;
+		}
+		lastX = x + (fontPadX * scaleX) - (chrWidth / 2.0f);
+		lastY = y + (fontPadY * scaleY) - (chrHeight / 2.0f);
+	}
+	// --Draw Text--//
+	// D: continue draw text from last location 
+	// A: text - the string to draw
+	// R: [none]
+	public void draw(String text) {
+		// Calculate Scaled Character Height
+		float chrHeight = cellHeight * scaleY; 
+		// Calculate Scaled Character Width
+		float chrWidth = cellWidth * scaleX; 
+		int len = text.length(); // Get String Length
+		float x = lastX + (chrWidth / 2.0f) - (fontPadX * scaleX); // Adjust Start X
+		float y = lastY + (chrHeight / 2.0f) - (fontPadY * scaleY); // Adjust Start Y
+		for (int i = 0; i < len; i++) { // FOR Each Character in String
+			int c = (int) text.charAt(i) - CHAR_START; // Calculate Character
+			// Index (Offset by First Char in Font)
+			if (c < 0 || c >= CHAR_CNT) // IF Character Not In Font
+				c = CHAR_UNKNOWN; // Set to Unknown Character Index
+			// Draw the Character
+			batch.drawSprite(x, y, chrWidth, chrHeight, charRgn[c]); 
+			// Advance X Position by Scaled Character Width
+			x += (charWidths[c] + spaceX) * scaleX;
 //			x += (chrWidth + spaceX) * scaleX;
 		    Log.d(TAG, "charWidths, chrWidth, spaceX = "+ 
 		    	      + charWidths[c] + ", " + chrWidth + ", " + spaceX);
 		}
+		lastX = x + (fontPadX * scaleX) - (chrWidth / 2.0f);
+		lastY = y + (fontPadY * scaleY) - (chrHeight / 2.0f);
 	}
-
+	
+	
 	// --Draw Text Centered--//
 	// D: draw text CENTERED at the specified x,y position
 	// A: text - the string to draw
@@ -404,8 +426,8 @@ public class GLText {
 	// R: the total width of the text that was drawn
 	public float drawC(String text, float x, float y) {
 		float len = getLength(text); // Get Text Length
-		draw(text, x - (len / 2.0f), y - (getCharHeight() / 2.0f)); // Draw Text
-																	// Centered
+		// Draw Text Centered
+		draw(text, x - (len / 2.0f), y - (getCharHeight() / 2.0f)); 
 		return len; // Return Length
 	}
 
@@ -463,23 +485,22 @@ public class GLText {
 	}
 
 	// --Get Length of a String--//
-	// D: return the length of the specified string if rendered using current
-	// settings
+	// D: return the length of the specified string if rendered using current settings
 	// A: text - the string to get length for
 	// R: the length of the specified string (pixels)
 	public float getLength(String text) {
 		float len = 0.0f; // Working Length
 		int strLen = text.length(); // Get String Length (Characters)
-		for (int i = 0; i < strLen; i++) { // For Each Character in String
-											// (Except Last
-			int c = (int) text.charAt(i) - CHAR_START; // Calculate Character
-														// Index (Offset by
-														// First Char in Font)
-			len += (charWidths[c] * scaleX); // Add Scaled Character Width to
-												// Total Length
+		// For Each Character in String (Except Last)
+		for (int i = 0; i < strLen; i++) { 
+			// Calculate Character Index (Offset by
+			// First Char in Font)
+			int c = (int) text.charAt(i) - CHAR_START; 
+			// Add Scaled Character Width to Total Length
+			len += (charWidths[c] * scaleX); 
 		}
-		len += (strLen > 1 ? ((strLen - 1) * spaceX) * scaleX : 0); // Add Space
-																	// Length
+		// Add Space Length
+		len += (strLen > 1 ? ((strLen - 1) * spaceX) * scaleX : 0); 
 		return len; // Return Total Length
 	}
 
@@ -528,11 +549,13 @@ public class GLText {
 		// Begin Batch (Bind Texture)
 		float [] colorV = {0.0f, 0.0f, 1.0f, 0.5f};
 		batch.beginBatch(textureId, colorV); 
-		batch.drawSprite(textureSize/2, textureSize/2,
+		batch.drawSprite(textureSize/2.0f, 0,
 				textureSize, textureSize, textureRgn); // Draw
 		batch.endBatch(); // End Batch
 	}
 
+	// Save bitmap into file
+	// For debug purpose
 	private void saveBitmap(String fileName) {
 		String mFilePath = Environment.getExternalStorageDirectory().toString() + File.separator.toString() + fileName;
 		//write the bytes in file
@@ -542,7 +565,6 @@ public class GLText {
 			fo.flush();
 			fo.close();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
