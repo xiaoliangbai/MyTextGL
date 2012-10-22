@@ -135,7 +135,7 @@ public class TextGLRenderer implements GLSurfaceView.Renderer {
 		// NOTE: after a successful call to this the font is ready for
 		// rendering!
 		// Create Font (Height: 14 Pixels; X+Y Padding 2 Pixels)
-		glText.load("Novelty Script plain.ttf", 14, 2, 2);
+		glText.load("bookos.ttf", 14, 2, 2);
 
 	}
 
@@ -241,7 +241,7 @@ public class TextGLRenderer implements GLSurfaceView.Renderer {
 		}
 		if (shaderHandle == 0) {
 			throw new RuntimeException("Error creating shader.");
-		}
+	}
 		return shaderHandle;
 	}
 
