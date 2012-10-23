@@ -18,7 +18,7 @@ public class MyTextGLActivity extends Activity {
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        setContentView(R.layout.main);
+
      // Check if the system supports OpenGL ES 2.0.
      		final ActivityManager activityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
      		final ConfigurationInfo configurationInfo = activityManager
@@ -63,9 +63,6 @@ public class MyTextGLActivity extends Activity {
 			mTextGLRenderer = new TextGLRenderer(context);
 			setRenderer(mTextGLRenderer);
 			mVibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
-			// Render the view only when there is a change in the drawing data
-			// not good if you want to have automatic animation
-			//setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
 
 		}
 

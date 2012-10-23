@@ -16,14 +16,14 @@ public class TextGLRenderer implements GLSurfaceView.Renderer {
 	private static final String TAG = "TextGLRenderer";
 	private final Context mActivityContext;
 	private GLText glText; // A GLText Instance
-	//Updated to the Current Width + Height in onSurfaceChanged()
+	//Screen width and height
+	//Values updated in onSurfaceChanged()
 	private int width = 100; 
 	private int height = 100;
 
 	// model, view, projection matrix
 	private final float[] mMVPMatrix = new float[16];
 	private final float[] mModelMatrix = new float[16];
-//	private final float[] mProjMatrix = new float[16];
 	private final float[] mVMatrix = new float[16];
 	private final float[] mOrthProjMatrix = new float[16];
 	
@@ -35,6 +35,7 @@ public class TextGLRenderer implements GLSurfaceView.Renderer {
 		// Save width and height
 		this.width = width; // Save Current Width
 		this.height = height; // Save Current Height
+		
 		// Create a new perspective projection matrix. The height will stay the
 		// same while the width will vary as per aspect ratio.
 		final float ratio = (float) width / height;
@@ -43,7 +44,7 @@ public class TextGLRenderer implements GLSurfaceView.Renderer {
 		final float bottom = -1.0f;
 		final float top = 1.0f;
 		final float near = 1.0f;
-		final float far = 10.0f;
+		final float far = 100.0f;
 		// Matrix.frustumM(mProjMatrix, 0, left, right, bottom, top, near, far);
 		// Matrix.orthoM(mOrthProjMatrix, 0, left, right, bottom, top, near, far);
 		
